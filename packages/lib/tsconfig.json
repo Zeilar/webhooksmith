@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "baseUrl": ".",
+    "paths": {
+      "@workspace/lib/*": ["./src/*"]
+    }
+  },
+  "include": [".", "../../types"],
+  "exclude": ["node_modules", "dist"]
+}

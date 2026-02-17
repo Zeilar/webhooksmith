@@ -1,0 +1,9 @@
+pnpm-lock.yaml
+.pnpm-store
+.turbo
+.zfs
+dist
+package.json
+README.*
+.next
+node_modules

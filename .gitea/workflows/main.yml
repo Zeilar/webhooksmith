@@ -1,0 +1,32 @@
+name: Redeploy webhooksmith
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install curl
+        run: |
+          apt-get update
+          apt-get install -y curl ca-certificates
+      - name: Redeploy Komodo webhooksmith stack
+        shell: bash
+        env:
+          KOMODO_API_KEY: ${{ secrets.KOMODO_API_KEY }}
+          KOMODO_API_SECRET: ${{ secrets.KOMODO_API_SECRET }}
+        run: |
+          set -euo pipefail
+
+          curl -fsS \
+            -H "Content-Type: application/json" \
+            -H "X-Api-Key: ${KOMODO_API_KEY}" \
+            -H "X-Api-Secret: ${KOMODO_API_SECRET}" \
+            --data '{"type":"DeployStack","params":{"stack":"webhooksmith"}}' \
+            "http://komodo:9120/execute"
+
+          echo "✅ Triggered DeployStack for webhooksmith"

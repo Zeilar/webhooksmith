@@ -1,0 +1,1 @@
+ALTER TABLE `sessions` ADD `expiresAt` text NOT NULL;

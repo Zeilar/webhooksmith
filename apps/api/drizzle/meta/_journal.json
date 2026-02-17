@@ -1,0 +1,48 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1770996640842,
+      "tag": "0000_narrow_puppet_master",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1771157694196,
+      "tag": "0001_aromatic_firedrake",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1771158788598,
+      "tag": "0002_worried_sharon_ventura",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1771248128747,
+      "tag": "0003_talented_pyro",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1771256411946,
+      "tag": "0004_demonic_marvel_apes",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1771279277967,
+      "tag": "0005_panoramic_skin",
+      "breakpoints": true
+    }
+  ]
+}
