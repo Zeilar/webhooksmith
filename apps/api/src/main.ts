@@ -63,8 +63,15 @@ async function bootstrap() {
         `Initial credentials provided, upserting user. This will change the password if a user with ${initialUsername} exists.`,
         "Bootstrap",
       );
-      await usersService.deleteAll();
-      await usersService.create({ username: initialUsername, password: initialPassword });
+      const user = await usersService.findByUsername(initialUsername);
+      if (user) {
+        Logger.log(`Username: ${initialUsername} exists, updating password`, "Bootstrap");
+        await usersService.update(user.id, { password: initialPassword });
+      } else {
+        Logger.log(`Username: ${initialUsername} available, truncating and seeding users table`, "Bootstrap");
+        await usersService.deleteAll();
+        await usersService.create({ username: initialUsername, password: initialPassword });
+      }
     }
   }
 

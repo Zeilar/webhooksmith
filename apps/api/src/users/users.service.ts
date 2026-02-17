@@ -46,7 +46,23 @@ export class UsersService {
       }
       return user;
     } catch (error) {
-      Logger.error(`Failed to update user with id ${id}`, UsersService.name);
+      Logger.error(`Failed to retrieve user with id: ${id}`, UsersService.name);
+      throw error;
+    }
+  }
+
+  public async findByUsername(username: string): Promise<User | null> {
+    try {
+      Logger.verbose(`Retrieving user with username: ${username}`, UsersService.name);
+      const [user] = await this.db.select().from(users).where(eq(users.username, username));
+      if (user) {
+        Logger.log(`Found user with username: ${username}`, UsersService.name);
+      } else {
+        Logger.warn(`Found no user with username: ${username}`, UsersService.name);
+      }
+      return user;
+    } catch (error) {
+      Logger.error(`Failed to retrieve user with username: ${username}`, UsersService.name);
       throw error;
     }
   }
@@ -66,7 +82,6 @@ export class UsersService {
         Logger.warn(message);
         throw new ConflictException(message);
       }
-      Logger.verbose(`Updating user with id: ${id}`, UsersService.name);
       const [user] = await this.db
         .update(users)
         .set({
