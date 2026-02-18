@@ -178,15 +178,27 @@ export function WebhookBuilder({
     <form.AppForm>
       <form.Form className="min-h-screen bg-zinc-950 text-zinc-100 w-full px-6 py-8">
         <div className="mx-auto max-w-5xl">
-          <div className="space-y-3">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900/40">
-                <WebhookIcon className="h-5 w-5 text-zinc-200" />
-              </div>
-              <h1 className="text-xl font-semibold">
-                Webhook / <span className="text-zinc-500">{id ?? "new"}</span>
-              </h1>
+          <div className="flex items-center gap-3 mb-8">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900/40">
+              <WebhookIcon className="h-5 w-5 text-zinc-200" />
             </div>
+            <h1 className="text-xl font-semibold">
+              Webhook / <span className="text-zinc-500">{id ?? "new"}</span>
+            </h1>
+          </div>
+          <div className="mt-4 grid grid-cols-1 gap-6">
+            <Panel title="Details">
+              <div className="space-y-3">
+                <div className="w-full md:w-1/2">
+                  <form.AppField name="name">
+                    {(field) => <field.Input id="name-input" label="Name" type="text" required />}
+                  </form.AppField>
+                </div>
+                <form.AppField name="description">
+                  {(field) => <field.TextArea id="description-input" label="Description" rows={3} />}
+                </form.AppField>
+              </div>
+            </Panel>
             <Panel title="Intercept">
               <div className="space-y-2">
                 <p className="text-sm text-zinc-300">Use this URL in your app to intercept a response</p>
@@ -202,20 +214,6 @@ export function WebhookBuilder({
                     {isCopiedVisible ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
                   </button>
                 </span>
-              </div>
-            </Panel>
-          </div>
-          <div className="mt-4 grid grid-cols-1 gap-6">
-            <Panel title="Details">
-              <div className="space-y-3">
-                <div className="w-full md:w-1/2">
-                  <form.AppField name="name">
-                    {(field) => <field.Input id="name-input" label="Name" type="text" required />}
-                  </form.AppField>
-                </div>
-                <form.AppField name="description">
-                  {(field) => <field.TextArea id="description-input" label="Description" rows={3} />}
-                </form.AppField>
               </div>
             </Panel>
             <section className="grid grid-cols-1 gap-6 xl:grid-cols-2">
