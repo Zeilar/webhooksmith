@@ -292,6 +292,9 @@ importers:
 
   packages/lib:
     dependencies:
+      base-id:
+        specifier: ^3.3.0
+        version: 3.3.0
       class-transformer:
         specifier: ^0.5.1
         version: 0.5.1

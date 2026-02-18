@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { LogOut, Settings, Webhook } from "lucide-react";
-import { Route } from "next";
+import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
