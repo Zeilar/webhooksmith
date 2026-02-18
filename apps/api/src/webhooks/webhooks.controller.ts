@@ -11,10 +11,16 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from "@nestjs/common";
 import { Webhook } from "@workspace/lib/db/schema";
-import { CreateWebhookDto, TestWebhookBlueprintDto, UpdateWebhookDto } from "@workspace/lib/dto";
+import {
+  CreateWebhookDto,
+  TestWebhookBlueprintDto,
+  UpdateWebhookDto,
+  type PaginatedWebhooksDto,
+} from "@workspace/lib/dto";
 import { WsGateway } from "@/ws/ws.gateway";
 import { WebhooksService } from "./webhooks.service";
 import { AuthGuard } from "@/auth/auth.guard";
@@ -22,10 +28,19 @@ import { AuthGuard } from "@/auth/auth.guard";
 @UseGuards(AuthGuard)
 @Controller("/v1/webhooks")
 export class WebhooksController {
+  private static readonly DEFAULT_PAGE = 1;
+  private static readonly DEFAULT_PAGE_SIZE = 12;
+  private static readonly MAX_PAGE_SIZE = 50;
+
   constructor(
     private readonly webhooksService: WebhooksService,
     private readonly wsGateway: WsGateway,
   ) {}
+
+  private parsePositiveInt(raw: string | undefined, fallback: number): number {
+    const value = Number.parseInt(raw ?? "", 10);
+    return Number.isFinite(value) && value > 0 ? value : fallback;
+  }
 
   private async assertWebhookExists(id: string): Promise<void> {
     if (!(await this.webhooksService.exists(id))) {
@@ -57,8 +72,16 @@ export class WebhooksController {
 
   @HttpCode(HttpStatus.OK)
   @Get("/")
-  public getAll(): Promise<Webhook[]> {
-    return this.webhooksService.getAll();
+  public getAll(
+    @Query("page") pageRaw?: string,
+    @Query("pageSize") pageSizeRaw?: string,
+  ): Promise<PaginatedWebhooksDto> {
+    const page = this.parsePositiveInt(pageRaw, WebhooksController.DEFAULT_PAGE);
+    const pageSize = Math.min(
+      this.parsePositiveInt(pageSizeRaw, WebhooksController.DEFAULT_PAGE_SIZE),
+      WebhooksController.MAX_PAGE_SIZE,
+    );
+    return this.webhooksService.getAll(page, pageSize);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)

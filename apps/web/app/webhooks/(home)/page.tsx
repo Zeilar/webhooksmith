@@ -1,10 +1,33 @@
 import { fetcher } from "@/api/fetcher";
 import { WebhooksPage } from "./webhooks";
-import { Webhook } from "@workspace/lib/db/schema";
+import type { PaginatedWebhooksDto } from "@workspace/lib/dto";
 import { cookies } from "next/headers";
 
-export default async function Page() {
-  const { data } = await fetcher<Webhook[]>("/v1/webhooks", { headers: { cookie: `${await cookies()}` } });
+interface WebhooksHomePageProps {
+  searchParams: Promise<{
+    page?: string;
+    pageSize?: string;
+  }>;
+}
 
-  return <WebhooksPage webhooks={data ?? []} />;
+export default async function Page({ searchParams }: WebhooksHomePageProps) {
+  const params = await searchParams;
+  const parsedPage = Number.parseInt(params.page ?? "", 10);
+  const parsedPageSize = Number.parseInt(params.pageSize ?? "", 10);
+  const page = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1;
+  const pageSize = Number.isFinite(parsedPageSize) && parsedPageSize > 0 ? parsedPageSize : 12;
+  const query = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
+  const { data } = await fetcher<PaginatedWebhooksDto>(`/v1/webhooks?${query.toString()}`, {
+    headers: { cookie: `${await cookies()}` },
+  });
+
+  return (
+    <WebhooksPage
+      webhooks={data?.items ?? []}
+      page={data?.page ?? page}
+      pageSize={data?.pageSize ?? pageSize}
+      total={data?.total ?? 0}
+      totalPages={data?.totalPages ?? 1}
+    />
+  );
 }

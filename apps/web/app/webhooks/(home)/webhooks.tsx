@@ -2,15 +2,21 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { Plus, Webhook as WebhookIcon } from "lucide-react";
 import type { Webhook } from "@workspace/lib/db/schema";
+import classNames from "classnames";
+import { buttonVariants } from "@/ui/components/button";
 
 interface WebhooksPageProps {
   webhooks: Webhook[];
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
 }
 
-export function WebhooksPage({ webhooks }: WebhooksPageProps) {
-  let content: ReactNode;
+export function WebhooksPage({ webhooks, page, pageSize, total, totalPages }: WebhooksPageProps) {
+  let content: ReactNode = null;
 
-  if (webhooks.length === 0) {
+  if (webhooks.length === 0 && total === 0) {
     content = (
       <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-10">
         <div className="mx-auto flex max-w-xl flex-col items-center text-center">
@@ -31,6 +37,13 @@ export function WebhooksPage({ webhooks }: WebhooksPageProps) {
             </Link>
           </div>
         </div>
+      </div>
+    );
+  } else if (webhooks.length === 0) {
+    content = (
+      <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-10 text-center">
+        <h2 className="text-lg font-semibold">No webhooks on this page</h2>
+        <p className="mt-2 text-sm text-zinc-400">Try going back to a previous page.</p>
       </div>
     );
   } else {
@@ -74,6 +87,47 @@ export function WebhooksPage({ webhooks }: WebhooksPageProps) {
           </Link>
         </div>
         <div className="mt-8">{content}</div>
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-zinc-400">
+            Page {page} of {totalPages} ({total} total)
+          </p>
+          <div className="flex items-center gap-3">
+            {page > 1 ? (
+              <Link
+                href={`/webhooks?page=${page - 1}&pageSize=${pageSize}`}
+                className={buttonVariants({ variant: "outline" })}
+              >
+                Previous
+              </Link>
+            ) : (
+              <span
+                className={classNames(
+                  buttonVariants({ variant: "outline" }),
+                  "pointer-events-none opacity-50 select-none",
+                )}
+              >
+                Previous
+              </span>
+            )}
+            {page < totalPages ? (
+              <Link
+                href={`/webhooks?page=${page + 1}&pageSize=${pageSize}`}
+                className={buttonVariants({ variant: "outline" })}
+              >
+                Next
+              </Link>
+            ) : (
+              <span
+                className={classNames(
+                  buttonVariants({ variant: "outline" }),
+                  "pointer-events-none opacity-50 select-none",
+                )}
+              >
+                Next
+              </span>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

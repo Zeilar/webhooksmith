@@ -1,8 +1,8 @@
 import { Inject, Injectable, Logger, NotFoundException } from "@nestjs/common";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { compileBlueprint } from "src/webhooks/common/compile-blueprint";
 import { type Webhook, webhooks, type DrizzleDb } from "@workspace/lib/db/schema";
-import { CreateWebhookDto, UpdateWebhookDto } from "@workspace/lib/dto";
+import { CreateWebhookDto, UpdateWebhookDto, type PaginatedWebhooksDto } from "@workspace/lib/dto";
 import { randomBase58 } from "@workspace/lib/common";
 
 @Injectable()
@@ -19,14 +19,23 @@ export class WebhooksService {
     return webhook;
   }
 
-  public async getAll(): Promise<Webhook[]> {
+  public async getAll(page: number, pageSize: number): Promise<PaginatedWebhooksDto> {
     try {
-      Logger.verbose("Retrieving all webhooks", WebhooksService.name);
-      const result = await this.db.select().from(webhooks);
-      Logger.verbose(`Found ${result.length} webhooks`, WebhooksService.name);
-      return result;
+      Logger.verbose(`Retrieving webhooks page ${page} with page size ${pageSize}`, WebhooksService.name);
+      const total = await this.db.$count(webhooks);
+      const totalPages = Math.max(1, Math.ceil(total / pageSize));
+      const safePage = Math.min(page, totalPages);
+      const offset = (safePage - 1) * pageSize;
+      const items = await this.db
+        .select()
+        .from(webhooks)
+        .orderBy(desc(webhooks.createdAt))
+        .limit(pageSize)
+        .offset(offset);
+      Logger.verbose(`Found ${items.length} webhooks for page ${safePage}/${totalPages}`, WebhooksService.name);
+      return { items, page: safePage, pageSize, total, totalPages };
     } catch (error) {
-      Logger.error("Failed to retrieve all webhooks", WebhooksService.name);
+      Logger.error("Failed to retrieve paginated webhooks", WebhooksService.name);
       throw error;
     }
   }
