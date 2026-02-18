@@ -220,7 +220,9 @@ export function WebhookBuilder({
             </Panel>
             <section className="grid grid-cols-1 gap-6 xl:grid-cols-2">
               <Panel title="Intercepted response" headerClassName="h-15">
-                <form.AppField name="intercepted">{(field) => <field.Editor />}</form.AppField>
+                <form.AppField name="intercepted">
+                  {(field) => <field.Editor options={{ readOnly: true }} />}
+                </form.AppField>
               </Panel>
               <form.AppField
                 name="blueprint"
@@ -238,7 +240,7 @@ export function WebhookBuilder({
                     headerClassName="h-15"
                     headerAction={
                       <ResetButton
-                        onClick={() => form.setFieldValue("blueprint", blueprint)}
+                        onClick={() => form.resetField("blueprint")}
                         disabled={field.state.value === blueprint}
                       />
                     }
