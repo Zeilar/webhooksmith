@@ -94,7 +94,7 @@ export function WebhooksPage({ webhooks, page, pageSize, total, totalPages }: We
           <div className="flex items-center gap-3">
             {page > 1 ? (
               <Link
-                href={`/webhooks?page=${page - 1}&pageSize=${pageSize}`}
+                href={`/?page=${page - 1}&pageSize=${pageSize}`}
                 className={buttonVariants({ variant: "outline" })}
               >
                 <ChevronLeft className="h-4 w-4" />
@@ -113,7 +113,7 @@ export function WebhooksPage({ webhooks, page, pageSize, total, totalPages }: We
             )}
             {page < totalPages ? (
               <Link
-                href={`/webhooks?page=${page + 1}&pageSize=${pageSize}`}
+                href={`/?page=${page + 1}&pageSize=${pageSize}`}
                 className={buttonVariants({ variant: "outline" })}
               >
                 Next

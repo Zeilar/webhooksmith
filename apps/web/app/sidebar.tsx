@@ -13,7 +13,7 @@ interface SidebarProps {
 
 const items: { url: Route; label: string; icon: ReactNode }[] = [
   {
-    url: "/webhooks",
+    url: "/",
     label: "Webhooks",
     icon: <Webhook className="h-5 w-5" />,
   },
@@ -40,7 +40,8 @@ export function Sidebar({ logoutUrl }: SidebarProps) {
       <nav className="flex-1 px-3 py-2">
         <ul className="space-y-2">
           {items.map(({ url, label, icon }) => {
-            const isActive = pathname === url;
+            const isActive =
+              url === "/" ? pathname === "/" || pathname.startsWith("/webhooks") : pathname.startsWith(url);
             return (
               <li key={url}>
                 <Link
