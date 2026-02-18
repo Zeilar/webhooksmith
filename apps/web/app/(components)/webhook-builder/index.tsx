@@ -339,7 +339,6 @@ export function WebhookBuilder({
               <Button
                 type="button"
                 variant="danger"
-                className="h-10 gap-2"
                 onClick={() => deleteMutation.mutate()}
                 disabled={deleteMutation.isPending}
               >
