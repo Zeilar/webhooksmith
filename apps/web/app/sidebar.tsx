@@ -40,8 +40,7 @@ export function Sidebar({ logoutUrl }: SidebarProps) {
       <nav className="flex-1 px-3 pb-2">
         <ul className="space-y-2">
           {items.map(({ url, label, icon }) => {
-            const isActive =
-              url === "/" ? pathname === "/" || pathname.startsWith("/webhooks") : pathname.startsWith(url);
+            const isActive = url === pathname;
             return (
               <li key={url}>
                 <Link
