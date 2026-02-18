@@ -8,6 +8,7 @@ import type { UpdateSettingsDto, UpdateUserDto } from "@workspace/lib/dto";
 import { Save, Settings as SettingsIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { isStrongPassword } from "class-validator";
+import { toast } from "sonner";
 
 interface SettingsProps {
   userId: string;
@@ -35,10 +36,6 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
       const shouldUpdateUser = Boolean(username || password);
       const shouldUpdateSettings = parsedPerPage !== currentPerPage;
 
-      if (!shouldUpdateUser && !shouldUpdateSettings) {
-        return;
-      }
-
       const requests: Array<Promise<FetcherResult>> = [];
 
       if (shouldUpdateUser) {
@@ -62,6 +59,8 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
       }
 
       await Promise.all(requests);
+
+      toast.success("Settings saves successfully");
 
       refresh();
     },
