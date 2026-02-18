@@ -114,9 +114,9 @@ export function SubmitButton({ children, icon, ...props }: SubmitButtonProps) {
   const form = useFormContext();
 
   return (
-    <form.Subscribe selector={(state) => ({ isSubmitting: state.isSubmitting, isValid: state.isValid })}>
-      {({ isSubmitting, isValid }) => (
-        <Button type="submit" disabled={isSubmitting || props.disabled || !isValid} {...props}>
+    <form.Subscribe selector={(state) => ({ isSubmitting: state.isSubmitting })}>
+      {({ isSubmitting }) => (
+        <Button type="submit" disabled={isSubmitting || props.disabled} {...props}>
           {isSubmitting ? <LoaderCircle className="h-4 w-4 animate-spin" /> : icon}
           {children ?? "Submit"}
         </Button>

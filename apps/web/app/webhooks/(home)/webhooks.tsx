@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Plus, Webhook as WebhookIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Webhook as WebhookIcon } from "lucide-react";
 import type { Webhook } from "@workspace/lib/db/schema";
 import classNames from "classnames";
 import { buttonVariants } from "@/ui/components/button";
@@ -97,6 +97,7 @@ export function WebhooksPage({ webhooks, page, pageSize, total, totalPages }: We
                 href={`/webhooks?page=${page - 1}&pageSize=${pageSize}`}
                 className={buttonVariants({ variant: "outline" })}
               >
+                <ChevronLeft className="h-4 w-4" />
                 Previous
               </Link>
             ) : (
@@ -106,6 +107,7 @@ export function WebhooksPage({ webhooks, page, pageSize, total, totalPages }: We
                   "pointer-events-none opacity-50 select-none",
                 )}
               >
+                <ChevronLeft className="h-4 w-4" />
                 Previous
               </span>
             )}
@@ -115,6 +117,7 @@ export function WebhooksPage({ webhooks, page, pageSize, total, totalPages }: We
                 className={buttonVariants({ variant: "outline" })}
               >
                 Next
+                <ChevronRight className="h-4 w-4" />
               </Link>
             ) : (
               <span
@@ -124,6 +127,7 @@ export function WebhooksPage({ webhooks, page, pageSize, total, totalPages }: We
                 )}
               >
                 Next
+                <ChevronRight className="h-4 w-4" />
               </span>
             )}
           </div>
