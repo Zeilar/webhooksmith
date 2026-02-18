@@ -2,7 +2,7 @@
 
 import { fetcher, FetcherResult } from "@/api/fetcher";
 import { useForm } from "@/ui";
-import { Button } from "@/ui/components";
+import { Button, PageContainer, PageShell } from "@/ui/components";
 import { PER_PAGE_MAX, PER_PAGE_MIN } from "@workspace/lib/dto/settings/constants";
 import type { UpdateSettingsDto, UpdateUserDto } from "@workspace/lib/dto";
 import { Save, Settings as SettingsIcon } from "lucide-react";
@@ -67,8 +67,8 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
   });
 
   return (
-    <main className="min-h-screen w-full bg-zinc-950 px-6 py-8 text-zinc-100">
-      <div className="mx-auto w-full max-w-5xl">
+    <PageShell>
+      <PageContainer>
         <div className="mb-6 flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900/40">
             <SettingsIcon className="h-5 w-5 text-zinc-200" />
@@ -168,7 +168,7 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
             </div>
           </form.Form>
         </form.AppForm>
-      </div>
-    </main>
+      </PageContainer>
+    </PageShell>
   );
 }

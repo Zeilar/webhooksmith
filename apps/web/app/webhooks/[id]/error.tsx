@@ -2,7 +2,7 @@
 
 import { AlertTriangle } from "lucide-react";
 import Link from "next/link";
-import { buttonVariants } from "@/ui";
+import { buttonVariants, PageContainer, PageShell } from "@/ui";
 import { useParams } from "next/navigation";
 
 interface ErrorPageProps {
@@ -12,8 +12,8 @@ interface ErrorPageProps {
 export default function ErrorPage({ error }: ErrorPageProps) {
   const { id } = useParams();
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 w-full">
-      <div className="mx-auto flex min-h-screen max-w-3xl items-center px-6 py-8">
+    <PageShell>
+      <PageContainer maxWidthClassName="max-w-3xl" className="flex min-h-[calc(100vh-10rem)] items-center">
         <div className="w-full rounded-2xl border border-zinc-800 bg-zinc-950 p-8">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-rose-700/70 bg-rose-950/30">
@@ -32,12 +32,12 @@ export default function ErrorPage({ error }: ErrorPageProps) {
             </pre>
           )}
           <div className="mt-6 flex items-center gap-3">
-            <Link href="/webhooks" className={`${buttonVariants({ variant: "outline" })} h-10`}>
+            <Link href="/" className={`${buttonVariants({ variant: "outline" })} h-10`}>
               Back to webhooks
             </Link>
           </div>
         </div>
-      </div>
-    </div>
+      </PageContainer>
+    </PageShell>
   );
 }

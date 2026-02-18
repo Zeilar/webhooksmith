@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Plus, Webhook as WebhookIcon } from "lucide-
 import type { Webhook } from "@workspace/lib/db/schema";
 import classNames from "classnames";
 import { buttonVariants } from "@/ui/components/button";
+import { PageContainer, PageShell } from "@/ui/components";
 
 interface WebhooksPageProps {
   webhooks: Webhook[];
@@ -69,8 +70,8 @@ export function WebhooksPage({ webhooks, page, pageSize, total, totalPages }: We
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 w-full px-6 py-8">
-      <div className="mx-auto max-w-5xl">
+    <PageShell>
+      <PageContainer>
         <div className="flex gap-4 items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900/40">
@@ -132,7 +133,7 @@ export function WebhooksPage({ webhooks, page, pageSize, total, totalPages }: We
             )}
           </div>
         </div>
-      </div>
-    </div>
+      </PageContainer>
+    </PageShell>
   );
 }

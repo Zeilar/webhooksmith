@@ -17,6 +17,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button, buttonVariants, ErrorAlert, Modal, Panel, Required, ResetButton } from "@/ui/components";
+import { PageContainer, PageShell } from "@/ui/components";
 import { useSocket } from "@/ui";
 import { useForm, useDisclosure } from "@/ui/hooks";
 import type { CreateWebhookDto, TestWebhookBlueprintDto } from "@workspace/lib/dto";
@@ -176,8 +177,9 @@ export function WebhookBuilder({
 
   return (
     <form.AppForm>
-      <form.Form className="min-h-screen bg-zinc-950 text-zinc-100 w-full px-6 py-8">
-        <div className="mx-auto max-w-5xl">
+      <form.Form className="w-full">
+        <PageShell>
+          <PageContainer>
           <div className="flex items-center gap-3 mb-8">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900/40">
               <WebhookIcon className="h-5 w-5 text-zinc-200" />
@@ -323,7 +325,8 @@ export function WebhookBuilder({
               className="mt-3"
             />
           )}
-        </div>
+          </PageContainer>
+        </PageShell>
       </form.Form>
       {!createMode && (
         <Modal

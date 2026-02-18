@@ -4,6 +4,7 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       API_URL: string;
+      SOCKET_URL: string;
     }
   }
 }

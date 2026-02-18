@@ -25,7 +25,6 @@ import { WsGateway } from "@/ws/ws.gateway";
 import { WebhooksService } from "./webhooks.service";
 import { AuthGuard } from "@/auth/auth.guard";
 
-@UseGuards(AuthGuard)
 @Controller("/v1/webhooks")
 export class WebhooksController {
   private static readonly DEFAULT_PAGE = 1;
@@ -64,12 +63,14 @@ export class WebhooksController {
     });
   }
 
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   @Get("/:id")
   public findWebhookById(@Param("id") id: string): Promise<Webhook> {
     return this.webhooksService.findById(id);
   }
 
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   @Get("/")
   public getAll(
@@ -84,6 +85,7 @@ export class WebhooksController {
     return this.webhooksService.getAll(page, pageSize);
   }
 
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post("/test-blueprint")
   public async testBlueprint(@Body() { blueprint, intercepted, receiver }: TestWebhookBlueprintDto) {
@@ -101,6 +103,7 @@ export class WebhooksController {
     }
   }
 
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post("/")
   public async create(@Body() dto: CreateWebhookDto): Promise<Webhook> {
@@ -118,6 +121,7 @@ export class WebhooksController {
     this.wsGateway.broadcast(`intercept-${id}`, body);
   }
 
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Put("/:id")
   public async update(@Param("id") id: string, @Body() dto: UpdateWebhookDto): Promise<void> {
@@ -125,6 +129,7 @@ export class WebhooksController {
     await this.webhooksService.update(id, dto);
   }
 
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete("/:id")
   public async delete(@Param("id") id: string): Promise<void> {

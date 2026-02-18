@@ -3,6 +3,7 @@
 import { fetcher } from "@/api/fetcher";
 import { useRouter } from "next/navigation";
 import { useForm } from "@/ui";
+import { PageContainer, PageShell } from "@/ui/components";
 import type { SignInDto } from "@workspace/lib/dto";
 import { toast } from "sonner";
 
@@ -35,8 +36,8 @@ export function SignIn() {
   });
 
   return (
-    <main className="min-h-screen w-full bg-zinc-950 text-zinc-100">
-      <div className="mx-auto flex min-h-screen w-full max-w-md items-center px-6">
+    <PageShell>
+      <PageContainer maxWidthClassName="max-w-md" className="flex min-h-[calc(100vh-10rem)] items-center">
         <form.AppForm>
           <form.Form className="w-full space-y-4 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6">
             <h1 className="text-xl font-semibold">Sign in</h1>
@@ -65,7 +66,7 @@ export function SignIn() {
             <form.SubmitButton className="w-full">Sign in</form.SubmitButton>
           </form.Form>
         </form.AppForm>
-      </div>
-    </main>
+      </PageContainer>
+    </PageShell>
   );
 }

@@ -11,15 +11,13 @@ interface ProvidersProps extends PropsWithChildren {
 }
 
 export function Providers({ user, children }: ProvidersProps) {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { refetchOnWindowFocus: false, retry: false }, mutations: { retry: false } },
+  });
+
   return (
     <ProgressProvider height="4px" color="white" options={{ showSpinner: false }} shallowRouting>
-      <QueryClientProvider
-        client={
-          new QueryClient({
-            defaultOptions: { queries: { refetchOnWindowFocus: false, retry: false }, mutations: { retry: false } },
-          })
-        }
-      >
+      <QueryClientProvider client={queryClient}>
         <UserProvider user={user}>
           <SocketProvider>
             <Toaster

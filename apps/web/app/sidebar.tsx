@@ -33,7 +33,7 @@ export function Sidebar({ logoutUrl }: SidebarProps) {
   });
 
   return (
-    <aside className="sticky top-0 flex h-screen w-70 flex-col border-r border-zinc-800 bg-zinc-950 text-zinc-100">
+    <aside className="sticky top-0 flex h-screen w-70 flex-col border-r border-zinc-800 bg-zinc-950 text-zinc-100 shrink-0">
       <div className="flex h-16 items-center px-5">
         <div className="text-lg font-semibold text-zinc-50">Webhooksmith</div>
       </div>
