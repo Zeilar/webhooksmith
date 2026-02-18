@@ -33,11 +33,11 @@ export function Sidebar({ logoutUrl }: SidebarProps) {
   });
 
   return (
-    <aside className="sticky top-0 flex h-screen w-70 flex-col border-r border-zinc-800 bg-zinc-950 text-zinc-100 shrink-0">
-      <div className="flex h-16 items-center px-5">
+    <aside className="sticky top-0 flex h-screen w-65 flex-col border-r border-zinc-800 bg-zinc-950 text-zinc-100 shrink-0">
+      <div className="flex h-33 pb-8 pt-15 items-center px-5">
         <div className="text-lg font-semibold text-zinc-50">Webhooksmith</div>
       </div>
-      <nav className="flex-1 px-3 py-2">
+      <nav className="flex-1 px-3 pb-2">
         <ul className="space-y-2">
           {items.map(({ url, label, icon }) => {
             const isActive =

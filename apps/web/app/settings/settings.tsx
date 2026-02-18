@@ -2,7 +2,7 @@
 
 import { fetcher, FetcherResult } from "@/api/fetcher";
 import { useForm } from "@/ui";
-import { Button, PageContainer, PageShell } from "@/ui/components";
+import { Button, PageContainer, PageShell, PageTitle } from "@/ui/components";
 import { PER_PAGE_MAX, PER_PAGE_MIN } from "@workspace/lib/dto/settings/constants";
 import type { UpdateSettingsDto, UpdateUserDto } from "@workspace/lib/dto";
 import { Save, Settings as SettingsIcon } from "lucide-react";
@@ -69,12 +69,7 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
   return (
     <PageShell>
       <PageContainer>
-        <div className="mb-6 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900/40">
-            <SettingsIcon className="h-5 w-5 text-zinc-200" />
-          </div>
-          <h1 className="text-xl font-semibold">Settings</h1>
-        </div>
+        <PageTitle icon={<SettingsIcon className="h-5 w-5 text-zinc-200" />} title="Settings" className="mb-6" />
         <form.AppForm>
           <form.Form className="space-y-5">
             <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6">

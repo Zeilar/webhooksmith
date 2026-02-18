@@ -17,7 +17,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button, buttonVariants, ErrorAlert, Modal, Panel, Required, ResetButton } from "@/ui/components";
-import { PageContainer, PageShell } from "@/ui/components";
+import { PageContainer, PageShell, PageTitle } from "@/ui/components";
 import { useSocket } from "@/ui";
 import { useForm, useDisclosure } from "@/ui/hooks";
 import type { CreateWebhookDto, TestWebhookBlueprintDto } from "@workspace/lib/dto";
@@ -180,151 +180,138 @@ export function WebhookBuilder({
       <form.Form className="w-full">
         <PageShell>
           <PageContainer>
-          <div className="flex items-center gap-3 mb-8">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900/40">
-              <WebhookIcon className="h-5 w-5 text-zinc-200" />
-            </div>
-            <h1 className="text-xl font-semibold">
-              Webhook / <span className="text-zinc-500">{id ?? "new"}</span>
-            </h1>
-          </div>
-          <div className="mt-4 grid grid-cols-1 gap-6">
-            <Panel title="Details">
-              <div className="space-y-3">
-                <div className="w-full md:w-1/2">
-                  <form.AppField name="name">
-                    {(field) => <field.Input id="name-input" label="Name" type="text" required />}
+            <PageTitle
+              icon={<WebhookIcon className="h-5 w-5 text-zinc-200" />}
+              title={
+                <>
+                  Webhook / <span className="text-zinc-500">{id ?? "new"}</span>
+                </>
+              }
+            />
+            <div className="grid grid-cols-1 gap-6">
+              <Panel title="Details">
+                <div className="space-y-3">
+                  <div className="w-full md:w-1/2">
+                    <form.AppField name="name">
+                      {(field) => <field.Input id="name-input" label="Name" type="text" required />}
+                    </form.AppField>
+                  </div>
+                  <form.AppField name="description">
+                    {(field) => <field.TextArea id="description-input" label="Description" rows={3} />}
+                  </form.AppField>
+                  <form.AppField
+                    name="receiver"
+                    validators={{
+                      onBlur: ({ value }) => (!isURL(value) ? "Must be a valid URL." : undefined),
+                    }}
+                  >
+                    {(field) => (
+                      <field.Input
+                        placeholder="https://discord.com/api/webhooks/XXXXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                        type="url"
+                        label="Receiver"
+                        id="receiver-input"
+                        required
+                      />
+                    )}
                   </form.AppField>
                 </div>
-                <form.AppField name="description">
-                  {(field) => <field.TextArea id="description-input" label="Description" rows={3} />}
-                </form.AppField>
-              </div>
-            </Panel>
-            <Panel title="Intercept">
-              <div className="space-y-2">
-                <p className="text-sm text-zinc-300">Use this URL in your app to intercept a response</p>
-                <span className="inline-flex items-center gap-1 rounded-md border border-zinc-700 bg-zinc-900 px-2 py-1 text-sm text-zinc-100">
-                  <code>{interceptUrl}</code>
-                  <button
-                    type="button"
-                    onClick={copyInterceptUrl}
-                    aria-label="Copy intercept URL"
-                    className="ml-1 rounded p-0.5 text-zinc-300 transition-colors hover:bg-zinc-900 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-40"
-                    title={isCopiedVisible ? "Copied" : "Copy"}
-                  >
-                    {isCopiedVisible ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
-                  </button>
-                </span>
-              </div>
-            </Panel>
-            <section className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-              <Panel title="Intercepted response" headerClassName="h-15">
-                <form.AppField name="intercepted">
-                  {(field) => <field.Editor options={{ readOnly: true }} />}
-                </form.AppField>
               </Panel>
-              <form.AppField
-                name="blueprint"
-                validators={{
-                  onBlur: ({ value }) => (!isJSON(value) ? "Must be valid JSON." : undefined),
-                }}
-              >
-                {(field) => (
-                  <Panel
-                    title={
-                      <span>
-                        Blueprint <Required />
-                      </span>
-                    }
-                    headerClassName="h-15"
-                    headerAction={
-                      <ResetButton
-                        onClick={() => form.resetField("blueprint")}
-                        disabled={field.state.value === blueprint}
-                      />
-                    }
-                  >
-                    <field.Editor />
-                  </Panel>
-                )}
-              </form.AppField>
-            </section>
-            <form.AppField
-              name="receiver"
-              validators={{
-                onBlur: ({ value }) => (!isURL(value) ? "Must be a valid URL." : undefined),
-              }}
-            >
-              {(field) => (
-                <Panel
-                  title={
-                    <field.FieldLabel htmlFor="receiver-input" required className="mb-0!">
-                      Receiver
-                    </field.FieldLabel>
-                  }
-                  headerAction={
-                    <ResetButton
-                      onClick={() => form.setFieldValue("receiver", receiver)}
-                      disabled={field.state.value === receiver}
-                    />
-                  }
-                >
-                  <field.Input
-                    placeholder="https://discord.com/api/webhooks/XXXXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-                    type="url"
-                    id="receiver-input"
-                    required
-                  />
-                </Panel>
-              )}
-            </form.AppField>
-          </div>
-          <div className="mt-6 flex items-center gap-3">
-            <form.SubmitButton
-              className="h-full"
-              icon={createMode ? <Rocket className="h-4 w-4" /> : <Save className="h-4 w-4" />}
-            >
-              {createMode ? "Submit" : "Save"}
-            </form.SubmitButton>
-            <form.AppField name="receiver">
-              {(receiverField) => (
-                <form.AppField name="intercepted">
-                  {(interceptedField) => (
-                    <Button
+              <Panel title="Intercept">
+                <div className="space-y-2">
+                  <p className="text-sm text-zinc-300">Use this URL in your app to intercept a response</p>
+                  <span className="inline-flex items-center gap-1 rounded-md border border-zinc-700 bg-zinc-900 px-2 py-1 text-sm text-zinc-100">
+                    <code>{interceptUrl}</code>
+                    <button
                       type="button"
-                      onClick={() => testMutation.mutate()}
-                      disabled={
-                        testMutation.isPending || !receiverField.state.value || !isJSON(interceptedField.state.value)
-                      }
-                      title={testTitle}
-                      variant="outline"
+                      onClick={copyInterceptUrl}
+                      aria-label="Copy intercept URL"
+                      className="ml-1 rounded p-0.5 text-zinc-300 transition-colors hover:bg-zinc-900 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-40"
+                      title={isCopiedVisible ? "Copied" : "Copy"}
                     >
-                      <span>Test</span>
-                      {testIcon}
-                    </Button>
+                      {isCopiedVisible ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
+                    </button>
+                  </span>
+                </div>
+              </Panel>
+              <section className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+                <Panel title="Intercepted response" headerClassName="h-15">
+                  <form.AppField name="intercepted">
+                    {(field) => <field.Editor options={{ readOnly: true }} />}
+                  </form.AppField>
+                </Panel>
+                <form.AppField
+                  name="blueprint"
+                  validators={{
+                    onBlur: ({ value }) => (!isJSON(value) ? "Must be valid JSON." : undefined),
+                  }}
+                >
+                  {(field) => (
+                    <Panel
+                      title={
+                        <span>
+                          Blueprint <Required />
+                        </span>
+                      }
+                      headerClassName="h-15"
+                      headerAction={
+                        <ResetButton
+                          onClick={() => form.resetField("blueprint")}
+                          disabled={field.state.value === blueprint}
+                        />
+                      }
+                    >
+                      <field.Editor />
+                    </Panel>
                   )}
                 </form.AppField>
+              </section>
+            </div>
+            <div className="mt-6 flex items-center gap-3">
+              <form.SubmitButton
+                className="h-full"
+                icon={createMode ? <Rocket className="h-4 w-4" /> : <Save className="h-4 w-4" />}
+              >
+                {createMode ? "Submit" : "Save"}
+              </form.SubmitButton>
+              <form.AppField name="receiver">
+                {(receiverField) => (
+                  <form.AppField name="intercepted">
+                    {(interceptedField) => (
+                      <Button
+                        type="button"
+                        onClick={() => testMutation.mutate()}
+                        disabled={
+                          testMutation.isPending || !receiverField.state.value || !isJSON(interceptedField.state.value)
+                        }
+                        title={testTitle}
+                        variant="outline"
+                      >
+                        <span>Test</span>
+                        {testIcon}
+                      </Button>
+                    )}
+                  </form.AppField>
+                )}
+              </form.AppField>
+              <Link href="/webhooks" className={buttonVariants({ variant: "outline" })}>
+                Cancel
+              </Link>
+              {!createMode && (
+                <Button type="button" variant="danger" className="ml-auto" onClick={deleteModal.open}>
+                  <Trash2 className="h-4 w-4" />
+                  <span>Delete</span>
+                </Button>
               )}
-            </form.AppField>
-            <Link href="/webhooks" className={buttonVariants({ variant: "outline" })}>
-              Cancel
-            </Link>
-            {!createMode && (
-              <Button type="button" variant="danger" className="ml-auto" onClick={deleteModal.open}>
-                <Trash2 className="h-4 w-4" />
-                <span>Delete</span>
-              </Button>
+            </div>
+            {testMutation.isError && (
+              <ErrorAlert
+                title="Test request failed"
+                message={testErrorMessage}
+                cause={testErrorCause}
+                className="mt-3"
+              />
             )}
-          </div>
-          {testMutation.isError && (
-            <ErrorAlert
-              title="Test request failed"
-              message={testErrorMessage}
-              cause={testErrorCause}
-              className="mt-3"
-            />
-          )}
           </PageContainer>
         </PageShell>
       </form.Form>

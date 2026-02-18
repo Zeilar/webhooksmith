@@ -11,7 +11,11 @@ interface PageContainerProps extends PropsWithChildren {
 }
 
 export function PageShell({ children, className }: PageShellProps) {
-  return <main className={classNames("min-h-screen w-full bg-zinc-950 px-25 py-20 text-zinc-100", className)}>{children}</main>;
+  return (
+    <main className={classNames("min-h-screen w-full bg-zinc-950 px-20 pt-15 pb-5 text-zinc-100", className)}>
+      {children}
+    </main>
+  );
 }
 
 export function PageContainer({ children, className, maxWidthClassName = "max-w-5xl" }: PageContainerProps) {

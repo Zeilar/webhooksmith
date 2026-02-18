@@ -2,6 +2,7 @@ export * from "./button";
 export * from "./error-alert";
 export * from "./modal";
 export * from "./panel";
-export * from "./page-shell";
+export * from "./page";
+export * from "./page-title";
 export * from "./reset-button";
 export * from "./required";

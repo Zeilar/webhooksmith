@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, Plus, Webhook as WebhookIcon } from "lucide-
 import type { Webhook } from "@workspace/lib/db/schema";
 import classNames from "classnames";
 import { buttonVariants } from "@/ui/components/button";
-import { PageContainer, PageShell } from "@/ui/components";
+import { PageContainer, PageShell, PageTitle } from "@/ui/components";
 
 interface WebhooksPageProps {
   webhooks: Webhook[];
@@ -72,21 +72,19 @@ export function WebhooksPage({ webhooks, page, pageSize, total, totalPages }: We
   return (
     <PageShell>
       <PageContainer>
-        <div className="flex gap-4 items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900/40">
-              <WebhookIcon className="h-5 w-5 text-zinc-200" />
-            </div>
-            <h1 className="text-xl font-semibold">Webhooks</h1>
-          </div>
-          <Link
-            href="/webhooks/new"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-100 px-4 py-2 text-sm font-medium text-zinc-950 hover:bg-white"
-          >
-            <Plus className="h-4 w-4" />
-            New webhook
-          </Link>
-        </div>
+        <PageTitle
+          icon={<WebhookIcon className="h-5 w-5 text-zinc-200" />}
+          title="Webhooks"
+          action={
+            <Link
+              href="/webhooks/new"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-100 px-4 py-2 text-sm font-medium text-zinc-950 hover:bg-white"
+            >
+              <Plus className="h-4 w-4" />
+              New webhook
+            </Link>
+          }
+        />
         <div className="mt-8">{content}</div>
         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-zinc-400">
