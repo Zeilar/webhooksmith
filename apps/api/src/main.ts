@@ -2,6 +2,7 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app/app.module";
 import { Logger, ValidationPipe, type LogLevel } from "@nestjs/common";
 import { UsersService } from "./users/users.service";
+import { SettingsService } from "./settings/settings.service";
 
 const PORT = process.env.PORT ?? 3030;
 const LOG_LEVELS: LogLevel[] = ["error", "warn", "log", "debug", "verbose"];
@@ -74,6 +75,8 @@ async function bootstrap() {
       }
     }
   }
+
+  await app.get(SettingsService).get();
 
   await app.listen(PORT, process.env.WEB_HOST ?? "0.0.0.0");
   Logger.log(`Server running and listening at ${await app.getUrl()}`);

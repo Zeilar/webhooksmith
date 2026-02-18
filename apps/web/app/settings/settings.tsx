@@ -1,39 +1,69 @@
 "use client";
 
-import { fetcher } from "@/api/fetcher";
+import { fetcher, FetcherResult } from "@/api/fetcher";
 import { useForm } from "@/ui";
 import { Button } from "@/ui/components";
-import { UpdateUserDto } from "@workspace/lib/dto";
-import { isStrongPassword } from "class-validator";
+import { PER_PAGE_MAX, PER_PAGE_MIN } from "@workspace/lib/dto/settings/constants";
+import type { UpdateSettingsDto, UpdateUserDto } from "@workspace/lib/dto";
 import { Save, Settings as SettingsIcon } from "lucide-react";
-import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { isStrongPassword } from "class-validator";
 
 interface SettingsProps {
   userId: string;
   currentUsername: string;
+  currentPerPage: number;
 }
 
-export function Settings({ currentUsername, userId }: SettingsProps) {
+export function Settings({ currentPerPage, currentUsername, userId }: SettingsProps) {
+  const { refresh } = useRouter();
   const form = useForm({
-    defaultValues: { username: "", password: "", passwordConfirmation: "" } as Required<UpdateUserDto> & {
+    defaultValues: {
+      username: "",
+      password: "",
+      passwordConfirmation: "",
+      perPage: `${currentPerPage}`,
+    } as Required<UpdateUserDto> & {
       passwordConfirmation: string;
+      perPage: string;
     },
     onSubmit: async ({ value }) => {
-      const { ok } = await fetcher(`/v1/users/${userId}`, {
-        method: "PATCH",
-        credentials: "include",
-        body: JSON.stringify({
-          username: value.username !== currentUsername ? value.username.trim() || undefined : undefined,
-          password: value.password.trim() || undefined,
-        } satisfies UpdateUserDto),
-      });
+      const username = value.username !== currentUsername ? value.username.trim() || undefined : undefined;
+      const password = value.password.trim() || undefined;
+      const parsedPerPage = Number(value.perPage);
 
-      if (ok) {
-        toast.success("Changes saved");
+      const shouldUpdateUser = Boolean(username || password);
+      const shouldUpdateSettings = parsedPerPage !== currentPerPage;
+
+      if (!shouldUpdateUser && !shouldUpdateSettings) {
         return;
       }
 
-      toast.error("An unexpected error occurred");
+      const requests: Array<Promise<FetcherResult>> = [];
+
+      if (shouldUpdateUser) {
+        requests.push(
+          fetcher(`/v1/users/${userId}`, {
+            method: "PATCH",
+            credentials: "include",
+            body: JSON.stringify({ username, password } satisfies UpdateUserDto),
+          }),
+        );
+      }
+
+      if (shouldUpdateSettings) {
+        requests.push(
+          fetcher("/v1/settings", {
+            method: "PATCH",
+            credentials: "include",
+            body: JSON.stringify({ perPage: parsedPerPage } satisfies UpdateSettingsDto),
+          }),
+        );
+      }
+
+      await Promise.all(requests);
+
+      refresh();
     },
   });
 
@@ -95,6 +125,33 @@ export function Settings({ currentUsername, userId }: SettingsProps) {
                       label="Confirm password"
                       type="password"
                       placeholder="Optional"
+                    />
+                  )}
+                </form.AppField>
+              </div>
+            </section>
+            <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6">
+              <h2 className="text-lg font-semibold mb-4">Display</h2>
+              <div className="w-full md:w-1/2">
+                <form.AppField
+                  name="perPage"
+                  validators={{
+                    onChange: ({ value }) => {
+                      const parsed = Number(value);
+                      return !Number.isFinite(parsed) || parsed < PER_PAGE_MIN || parsed > PER_PAGE_MAX
+                        ? `Must be between ${PER_PAGE_MIN} and ${PER_PAGE_MAX}`
+                        : undefined;
+                    },
+                  }}
+                >
+                  {(field) => (
+                    <field.Input
+                      inputClassName="w-20!"
+                      id="perPage"
+                      label="Webhooks per page"
+                      type="number"
+                      min={PER_PAGE_MIN}
+                      max={PER_PAGE_MAX}
                     />
                   )}
                 </form.AppField>

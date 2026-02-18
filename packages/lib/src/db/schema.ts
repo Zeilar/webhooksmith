@@ -1,10 +1,11 @@
 import type { InferInsertModel } from "drizzle-orm";
-import { text, sqliteTable } from "drizzle-orm/sqlite-core";
+import { integer, text, sqliteTable } from "drizzle-orm/sqlite-core";
 import type { LibSQLDatabase } from "drizzle-orm/libsql";
 
 export type Webhook = InferInsertModel<typeof webhooks>;
 export type User = InferInsertModel<typeof users>;
 export type Session = InferInsertModel<typeof sessions>;
+export type Setting = InferInsertModel<typeof settings>;
 export type DrizzleDb = LibSQLDatabase<typeof schema>;
 
 const createdAt = text("created_at")
@@ -61,4 +62,11 @@ export const sessions = sqliteTable("sessions", {
   updatedAt,
 });
 
-export const schema = { webhooks, users, sessions };
+export const settings = sqliteTable("settings", {
+  id,
+  perPage: integer("per_page").notNull().default(12),
+  createdAt,
+  updatedAt,
+});
+
+export const schema = { webhooks, users, sessions, settings };

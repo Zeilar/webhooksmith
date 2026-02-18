@@ -31,6 +31,7 @@ export interface BaseFieldProps {
 export type InputProps = BaseFieldProps &
   Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "defaultValue" | "onChange" | "onBlur"> & {
     clearValue?: string | number | null | undefined;
+    inputClassName?: string;
   };
 
 export type TextAreaProps = BaseFieldProps &
@@ -124,7 +125,17 @@ export function SubmitButton({ children, icon, ...props }: SubmitButtonProps) {
   );
 }
 
-export function Input({ label, id, helperText, clearValue, className, required, type, ...props }: InputProps) {
+export function Input({
+  label,
+  id,
+  helperText,
+  clearValue,
+  className,
+  inputClassName,
+  required,
+  type,
+  ...props
+}: InputProps) {
   const { handleBlur, handleChange, state } = useFieldContext<string | number | null | undefined>();
   const [isPasswordVisible, password] = useDisclosure();
   const error = getErrorText(state.meta.errors);
@@ -132,7 +143,7 @@ export function Input({ label, id, helperText, clearValue, className, required, 
   const isPassword = type === "password";
   const inputType = isPassword ? (isPasswordVisible ? "text" : "password") : type;
   const hasActions = canClear || isPassword;
-  const rightPaddingClassName = hasActions ? "pr-20" : "pr-9";
+  const rightPaddingClassName = hasActions ? "pr-20" : "pr-3";
 
   return (
     <div className={className}>
@@ -146,7 +157,7 @@ export function Input({ label, id, helperText, clearValue, className, required, 
           value={state.value ?? ""}
           onChange={(e) => handleChange(e.target.value)}
           onBlur={handleBlur}
-          className={classNames(fieldClassName, rightPaddingClassName)}
+          className={classNames(fieldClassName, rightPaddingClassName, inputClassName)}
           id={id}
           required={required}
           type={inputType}

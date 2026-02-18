@@ -8,6 +8,7 @@ import { WebhooksModule } from "../webhooks/webhooks.module";
 import { schema } from "@workspace/lib/db/schema";
 import { UsersModule } from "@/users/users.module";
 import { AuthModule } from "@/auth/auth.module";
+import { SettingsModule } from "@/settings/settings.module";
 import { z } from "zod";
 
 const envSchema = z
@@ -57,6 +58,7 @@ const envSchema = z
     WebhooksModule,
     UsersModule,
     AuthModule,
+    SettingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

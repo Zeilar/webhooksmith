@@ -1,6 +1,7 @@
 import { fetcher } from "@/api/fetcher";
 import { WebhooksPage } from "./webhooks";
 import type { PaginatedWebhooksDto } from "@workspace/lib/dto";
+import type { Setting } from "@workspace/lib/db/schema";
 import { cookies } from "next/headers";
 
 interface WebhooksHomePageProps {
@@ -12,13 +13,16 @@ interface WebhooksHomePageProps {
 
 export default async function Page({ searchParams }: WebhooksHomePageProps) {
   const params = await searchParams;
+  const cookieHeader = { cookie: `${await cookies()}` };
+  const { data: settings } = await fetcher<Setting>("/v1/settings", { headers: cookieHeader });
+  const defaultPageSize = settings?.perPage && settings.perPage > 0 ? settings.perPage : 12;
   const parsedPage = Number.parseInt(params.page ?? "", 10);
   const parsedPageSize = Number.parseInt(params.pageSize ?? "", 10);
   const page = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1;
-  const pageSize = Number.isFinite(parsedPageSize) && parsedPageSize > 0 ? parsedPageSize : 12;
+  const pageSize = Number.isFinite(parsedPageSize) && parsedPageSize > 0 ? parsedPageSize : defaultPageSize;
   const query = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
   const { data } = await fetcher<PaginatedWebhooksDto>(`/v1/webhooks?${query.toString()}`, {
-    headers: { cookie: `${await cookies()}` },
+    headers: cookieHeader,
   });
 
   return (

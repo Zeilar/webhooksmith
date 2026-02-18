@@ -32,7 +32,10 @@ export class WebhooksService {
         .orderBy(desc(webhooks.createdAt))
         .limit(pageSize)
         .offset(offset);
-      Logger.verbose(`Found ${items.length} webhooks for page ${safePage}/${totalPages}`, WebhooksService.name);
+      Logger.verbose(
+        `Found ${items.length} webhooks for page ${safePage}/${totalPages} out of ${total} webhooks`,
+        WebhooksService.name,
+      );
       return { items, page: safePage, pageSize, total, totalPages };
     } catch (error) {
       Logger.error("Failed to retrieve paginated webhooks", WebhooksService.name);

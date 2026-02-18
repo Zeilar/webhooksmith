@@ -189,6 +189,9 @@ importers:
       base-id:
         specifier: ^3.3.0
         version: 3.3.0
+      class-transformer:
+        specifier: ^0.5.1
+        version: 0.5.1
       class-validator:
         specifier: ^0.14.1
         version: 0.14.1
@@ -289,6 +292,9 @@ importers:
 
   packages/lib:
     dependencies:
+      class-transformer:
+        specifier: ^0.5.1
+        version: 0.5.1
       class-validator:
         specifier: ^0.14.1
         version: 0.14.1

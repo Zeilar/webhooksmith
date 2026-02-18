@@ -1,11 +1,11 @@
-export interface FetcherResult<T> {
+export interface FetcherResult<T = unknown> {
   data: T | null;
   ok: boolean;
   status: number;
   statusText: string;
 }
 
-export async function fetcher<T = null>(
+export async function fetcher<T = unknown>(
   uri: `/${string}`,
   { headers, ...options }: RequestInit = {},
 ): Promise<FetcherResult<T>> {

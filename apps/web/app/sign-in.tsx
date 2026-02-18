@@ -3,7 +3,7 @@
 import { fetcher } from "@/api/fetcher";
 import { useRouter } from "next/navigation";
 import { useForm } from "@/ui";
-import { SignInDto } from "@workspace/lib/dto";
+import type { SignInDto } from "@workspace/lib/dto";
 import { toast } from "sonner";
 
 export function SignIn() {
