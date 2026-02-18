@@ -208,9 +208,11 @@ export function WebhookBuilder({
           <div className="mt-4 grid grid-cols-1 gap-6">
             <Panel title="Details">
               <div className="space-y-3">
-                <form.AppField name="name">
-                  {(field) => <field.Input id="name-input" label="Name" type="text" required />}
-                </form.AppField>
+                <div className="w-full md:w-1/2">
+                  <form.AppField name="name">
+                    {(field) => <field.Input id="name-input" label="Name" type="text" required />}
+                  </form.AppField>
+                </div>
                 <form.AppField name="description">
                   {(field) => <field.TextArea id="description-input" label="Description" rows={3} />}
                 </form.AppField>

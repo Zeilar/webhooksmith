@@ -50,13 +50,15 @@ export function Settings({ currentUsername, userId }: SettingsProps) {
           <form.Form className="space-y-5">
             <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6">
               <h2 className="text-lg font-semibold mb-4">Account</h2>
-              <form.AppField name="username">
-                {(field) => <field.Input id="username" label="Username" placeholder={currentUsername} />}
-              </form.AppField>
+              <div className="w-full md:w-1/2">
+                <form.AppField name="username">
+                  {(field) => <field.Input id="username" label="Username" placeholder={currentUsername} />}
+                </form.AppField>
+              </div>
             </section>
             <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6">
               <h2 className="text-lg font-semibold mb-4">Security</h2>
-              <div className="grid gap-4">
+              <div className="grid gap-4 md:grid-cols-2 md:items-start">
                 <form.AppField name="password">
                   {(field) => {
                     const password = field.state.value?.trim();
