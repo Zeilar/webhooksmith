@@ -5,8 +5,12 @@ import { io, type Socket } from "socket.io-client";
 
 const SocketContext = createContext<Socket | null>(null);
 
-export function SocketProvider({ children }: PropsWithChildren) {
-  const socket = io(process.env.SOCKET_URL, { transports: ["websocket", "polling"], reconnection: true });
+interface SocketProviderProps extends PropsWithChildren {
+  socketUrl: string;
+}
+
+export function SocketProvider({ children, socketUrl }: SocketProviderProps) {
+  const socket = io(socketUrl, { transports: ["websocket", "polling"], reconnection: true });
   const onDisconnect = useEffectEvent(() => socket.disconnect());
 
   useEffect(() => {

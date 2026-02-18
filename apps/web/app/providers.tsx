@@ -8,9 +8,10 @@ import { ProgressProvider } from "@bprogress/next/app";
 
 interface ProvidersProps extends PropsWithChildren {
   user: CurrentUser | null;
+  socketUrl: string;
 }
 
-export function Providers({ user, children }: ProvidersProps) {
+export function Providers({ user, children, socketUrl }: ProvidersProps) {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { refetchOnWindowFocus: false, retry: false }, mutations: { retry: false } },
   });
@@ -19,7 +20,7 @@ export function Providers({ user, children }: ProvidersProps) {
     <ProgressProvider height="4px" color="white" options={{ showSpinner: false }} shallowRouting>
       <QueryClientProvider client={queryClient}>
         <UserProvider user={user}>
-          <SocketProvider>
+          <SocketProvider socketUrl={socketUrl}>
             <Toaster
               position="top-right"
               toastOptions={{

@@ -25,7 +25,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
     <html className={classNames("dark", inter.variable, "antialiased")} lang="en">
       <body>
         <div className="flex">
-          <Providers user={user}>
+          <Providers user={user} socketUrl={process.env.SOCKET_URL}>
             {user && <Sidebar logoutUrl={`${process.env.API_URL}/v1/auth/logout`} />}
             {user ? children : <SignIn />}
           </Providers>
