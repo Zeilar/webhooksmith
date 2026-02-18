@@ -18,13 +18,15 @@ export class SettingsService {
         .where(eq(settings.id, SettingsService.DEFAULT_SETTINGS_ID))
         .limit(1);
       if (existing) {
+        Logger.log("Found settings", SettingsService.name);
         return existing;
       }
-      Logger.log("No settings found, creating defaults", SettingsService.name);
+      Logger.warn("No settings found, seeding", SettingsService.name);
       const [created] = await this.db
         .insert(settings)
         .values({ id: SettingsService.DEFAULT_SETTINGS_ID, perPage: 12 })
         .returning();
+      Logger.log("Seeded settings", SettingsService.name);
       return created;
     } catch (error) {
       Logger.error("Failed to retrieve settings", SettingsService.name);

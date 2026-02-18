@@ -1,5 +1,5 @@
 import { fetcher } from "@/api/fetcher";
-import { WebhooksPage } from "./webhooks/(home)/webhooks";
+import { WebhooksPage } from "./(home)/webhooks";
 import type { PaginatedWebhooksDto } from "@workspace/lib/dto";
 import type { Setting } from "@workspace/lib/db/schema";
 import { cookies } from "next/headers";
