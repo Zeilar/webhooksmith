@@ -1,30 +1,22 @@
+"use client";
+
 import { CircleX } from "lucide-react";
-import { buttonVariants, PageContainer, PageShell } from "@/ui";
-import Link from "next/link";
+import { useParams } from "next/navigation";
+import { IdBadge, StatusPage } from "@/app/(components)/status-page";
 
 export default function Page() {
+  const { id } = useParams<{ id: string }>();
   return (
-    <PageShell>
-      <PageContainer maxWidthClassName="max-w-3xl" className="flex min-h-[calc(100vh-10rem)] items-center">
-        <div className="w-full rounded-2xl border border-zinc-800 bg-zinc-950 p-8">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-rose-700/70 bg-rose-950/30">
-              <CircleX className="h-5 w-5 text-rose-300" />
-            </div>
-            <div>
-              <h1 className="text-xl font-semibold">Webhook not found</h1>
-              <p className="mt-1 text-sm text-zinc-300">
-                No webhook exists for this ID. It may have been deleted or the URL is invalid.
-              </p>
-            </div>
-          </div>
-          <div className="mt-6 flex items-center gap-3">
-            <Link href="/" className={`${buttonVariants({ variant: "outline" })} h-10`}>
-              Back to webhooks
-            </Link>
-          </div>
-        </div>
-      </PageContainer>
-    </PageShell>
+    <StatusPage
+      title="Webhook not found"
+      description={
+        <>
+          No webhook exists with id <IdBadge>{id}</IdBadge>. It may have been deleted or the URL is invalid.
+        </>
+      }
+      icon={CircleX}
+      iconContainerClassName="flex h-10 w-10 items-center justify-center rounded-xl border border-rose-700/70 bg-rose-950/30"
+      iconClassName="h-5 w-5 text-rose-300"
+    />
   );
 }
