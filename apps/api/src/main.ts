@@ -3,6 +3,9 @@ import { AppModule } from "./app/app.module";
 import { Logger, ValidationPipe, type LogLevel } from "@nestjs/common";
 import { UsersService } from "./users/users.service";
 import { SettingsService } from "./settings/settings.service";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import type { Request, Response, NextFunction } from "express";
+import { COOKIE_NAME } from "./auth/auth.config";
 
 const PORT = process.env.PORT ?? 3030;
 const LOG_LEVELS: LogLevel[] = ["error", "warn", "log", "debug", "verbose"];
@@ -25,6 +28,52 @@ function resolveLogLevels(level: LogLevel | undefined): LogLevel[] {
 
 const initialUsername = process.env.INITIAL_USERNAME;
 const initialPassword = process.env.INITIAL_PASSWORD;
+const SWAGGER_PATH = process.env.SWAGGER_PATH?.trim() || "docs";
+
+function isSwaggerEnabled(): boolean {
+  if (process.env.SWAGGER_ENABLED) {
+    return process.env.SWAGGER_ENABLED.toLowerCase() === "true";
+  }
+  return process.env.NODE_ENV !== "production";
+}
+
+function parseBasicAuthHeader(authHeader: string): { username: string; password: string } | null {
+  if (!authHeader.startsWith("Basic ")) {
+    return null;
+  }
+  const base64 = authHeader.slice(6).trim();
+  const decoded = Buffer.from(base64, "base64").toString("utf8");
+  const separatorIndex = decoded.indexOf(":");
+  if (separatorIndex === -1) {
+    return null;
+  }
+  return {
+    username: decoded.slice(0, separatorIndex),
+    password: decoded.slice(separatorIndex + 1),
+  };
+}
+
+function createSwaggerBasicAuthMiddleware() {
+  const username = process.env.SWAGGER_USERNAME?.trim();
+  const password = process.env.SWAGGER_PASSWORD?.trim();
+
+  if (!username || !password) {
+    return null;
+  }
+
+  return (req: Request, res: Response, next: NextFunction): void => {
+    const authHeader = req.headers.authorization;
+    const credentials = authHeader ? parseBasicAuthHeader(authHeader) : null;
+
+    if (!credentials || credentials.username !== username || credentials.password !== password) {
+      res.setHeader("WWW-Authenticate", 'Basic realm="Swagger"');
+      res.status(401).send("Authentication required.");
+      return;
+    }
+
+    next();
+  };
+}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -48,7 +97,46 @@ async function bootstrap() {
   });
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
-  // TODO: validate env variables at startup
+  if (isSwaggerEnabled()) {
+    if (process.env.NODE_ENV === "production") {
+      const swaggerAuthMiddleware = createSwaggerBasicAuthMiddleware();
+      if (!swaggerAuthMiddleware) {
+        Logger.warn(
+          "SWAGGER_ENABLED=true but SWAGGER_USERNAME/SWAGGER_PASSWORD are missing. Swagger is disabled in production.",
+          "Bootstrap",
+        );
+        Logger.log("Swagger is disabled", "Bootstrap");
+      } else {
+        app.use(`/${SWAGGER_PATH}`, swaggerAuthMiddleware);
+        app.use(`/${SWAGGER_PATH}-json`, swaggerAuthMiddleware);
+        const swaggerConfig = new DocumentBuilder()
+          .setTitle("Webhooksmith API")
+          .setDescription("HTTP API for managing webhook blueprints, users, auth sessions, and settings.")
+          .setVersion("1.0")
+          .addCookieAuth(COOKIE_NAME, undefined, "cookie")
+          .build();
+        const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
+        SwaggerModule.setup(SWAGGER_PATH, app, swaggerDocument, {
+          swaggerOptions: { persistAuthorization: true },
+        });
+        Logger.log(`Swagger available at /${SWAGGER_PATH}`, "Bootstrap");
+      }
+    } else {
+      const swaggerConfig = new DocumentBuilder()
+        .setTitle("Webhooksmith API")
+        .setDescription("HTTP API for managing webhook blueprints, users, auth sessions, and settings.")
+        .setVersion("1.0")
+        .addCookieAuth(COOKIE_NAME, undefined, "cookie")
+        .build();
+      const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
+      SwaggerModule.setup(SWAGGER_PATH, app, swaggerDocument, {
+        swaggerOptions: { persistAuthorization: true },
+      });
+      Logger.log(`Swagger available at /${SWAGGER_PATH}`, "Bootstrap");
+    }
+  } else {
+    Logger.log("Swagger is disabled", "Bootstrap");
+  }
 
   if (initialUsername && initialPassword) {
     const usersService = app.get(UsersService);

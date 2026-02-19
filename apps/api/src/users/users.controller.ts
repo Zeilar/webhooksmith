@@ -1,4 +1,4 @@
-import type { UpdateUserDto } from "@workspace/lib/dto";
+import { UpdateUserDto } from "@workspace/lib/dto";
 import {
   BadRequestException,
   Body,
@@ -20,7 +20,20 @@ import type { Request } from "express";
 import { COOKIE_NAME } from "@/auth/auth.config";
 import { parse } from "cookie";
 import type { User } from "@workspace/lib/db/schema";
+import {
+  ApiBadRequestResponse,
+  ApiCookieAuth,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+  ApiUnauthorizedResponse,
+  ApiBody,
+} from "@nestjs/swagger";
 
+@ApiTags("Users")
 @Controller("/v1/users")
 export class UsersController {
   public constructor(
@@ -28,6 +41,13 @@ export class UsersController {
     private readonly sessionsService: SessionsService,
   ) {}
 
+  @ApiCookieAuth()
+  @ApiOperation({ summary: "Update username and/or password for a user." })
+  @ApiParam({ name: "id", type: String, description: "User ID." })
+  @ApiBody({ type: UpdateUserDto })
+  @ApiNoContentResponse({ description: "User updated." })
+  @ApiBadRequestResponse({ description: "No changes were provided." })
+  @ApiUnauthorizedResponse({ description: "Session is missing, invalid, or expired." })
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Patch("/:id")
@@ -40,6 +60,12 @@ export class UsersController {
     await this.usersService.update(id, dto);
   }
 
+  @ApiCookieAuth()
+  @ApiOperation({ summary: "Get the authenticated user profile." })
+  @ApiOkResponse({ description: "Authenticated user profile (without password)." })
+  @ApiBadRequestResponse({ description: "Cookie/session cookie value is missing." })
+  @ApiUnauthorizedResponse({ description: "Session is invalid or expired." })
+  @ApiNotFoundResponse({ description: "User for the current session was not found." })
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   @Get("/me")

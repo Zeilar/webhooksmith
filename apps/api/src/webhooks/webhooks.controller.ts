@@ -24,7 +24,21 @@ import {
 import { WsGateway } from "@/ws/ws.gateway";
 import { WebhooksService } from "./webhooks.service";
 import { AuthGuard } from "@/auth/auth.guard";
+import {
+  ApiBody,
+  ApiCookieAuth,
+  ApiCreatedResponse,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from "@nestjs/swagger";
 
+@ApiTags("Webhooks")
 @Controller("/v1/webhooks")
 export class WebhooksController {
   private static readonly DEFAULT_PAGE = 1;
@@ -51,6 +65,11 @@ export class WebhooksController {
    * This route picks up the remote request, processes it using the user mapping,
    * and then sends it to the final destination.
    */
+  @ApiOperation({ summary: "Receive source payload, transform it, and forward it to the webhook receiver URL." })
+  @ApiParam({ name: "id", type: String, description: "Webhook ID." })
+  @ApiBody({ schema: { type: "object", additionalProperties: true } })
+  @ApiOkResponse({ description: "Payload forwarded to receiver." })
+  @ApiNotFoundResponse({ description: "Webhook was not found." })
   @HttpCode(HttpStatus.OK)
   @Post("/:id/send")
   public async receiveAndSend(@Param("id") id: string, @Body() body: object): Promise<Response> {
@@ -63,6 +82,12 @@ export class WebhooksController {
     });
   }
 
+  @ApiCookieAuth()
+  @ApiOperation({ summary: "Get webhook by ID." })
+  @ApiParam({ name: "id", type: String, description: "Webhook ID." })
+  @ApiOkResponse({ description: "Webhook found." })
+  @ApiUnauthorizedResponse({ description: "Session is invalid or expired." })
+  @ApiNotFoundResponse({ description: "Webhook was not found." })
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   @Get("/:id")
@@ -70,6 +95,17 @@ export class WebhooksController {
     return this.webhooksService.findById(id);
   }
 
+  @ApiCookieAuth()
+  @ApiOperation({ summary: "List webhooks with pagination." })
+  @ApiQuery({ name: "page", required: false, type: Number, description: "1-based page number (default 1)." })
+  @ApiQuery({
+    name: "pageSize",
+    required: false,
+    type: Number,
+    description: "Page size (default 12, max 50).",
+  })
+  @ApiOkResponse({ description: "Paginated webhook list." })
+  @ApiUnauthorizedResponse({ description: "Session is invalid or expired." })
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   @Get("/")
@@ -85,6 +121,11 @@ export class WebhooksController {
     return this.webhooksService.getAll(page, pageSize);
   }
 
+  @ApiCookieAuth()
+  @ApiOperation({ summary: "Test a blueprint by sending transformed payload to a receiver URL." })
+  @ApiBody({ type: TestWebhookBlueprintDto })
+  @ApiNoContentResponse({ description: "Blueprint test request succeeded." })
+  @ApiUnauthorizedResponse({ description: "Session is invalid or expired." })
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post("/test-blueprint")
@@ -103,10 +144,15 @@ export class WebhooksController {
     }
   }
 
+  @ApiCookieAuth()
+  @ApiOperation({ summary: "Create a new webhook." })
+  @ApiBody({ type: CreateWebhookDto })
+  @ApiCreatedResponse({ description: "Webhook created." })
+  @ApiUnauthorizedResponse({ description: "Session is invalid or expired." })
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post("/")
-  public async create(@Body() dto: CreateWebhookDto): Promise<Webhook> {
+  public create(@Body() dto: CreateWebhookDto): Promise<Webhook> {
     return this.webhooksService.create(dto);
   }
 
@@ -114,6 +160,10 @@ export class WebhooksController {
    * This endpoint is for the user to see what JSON the origin server would send to the webhook.
    * It notifies the user via websocket so the client doesn't need to poll or anything.
    */
+  @ApiOperation({ summary: "Capture intercepted payload for a webhook and broadcast it over websocket." })
+  @ApiParam({ name: "id", type: String, description: "Intercept subscription ID." })
+  @ApiBody({ schema: { type: "object", additionalProperties: true } })
+  @ApiNoContentResponse({ description: "Payload intercepted and broadcast." })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post("/intercept/:id")
   public intercept(@Body() body: Record<string, unknown>, @Param("id") id: string): void {
@@ -121,6 +171,13 @@ export class WebhooksController {
     this.wsGateway.broadcast(`intercept-${id}`, body);
   }
 
+  @ApiCookieAuth()
+  @ApiOperation({ summary: "Update an existing webhook." })
+  @ApiParam({ name: "id", type: String, description: "Webhook ID." })
+  @ApiBody({ type: UpdateWebhookDto })
+  @ApiNoContentResponse({ description: "Webhook updated." })
+  @ApiUnauthorizedResponse({ description: "Session is invalid or expired." })
+  @ApiNotFoundResponse({ description: "Webhook was not found." })
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Put("/:id")
@@ -129,6 +186,12 @@ export class WebhooksController {
     await this.webhooksService.update(id, dto);
   }
 
+  @ApiCookieAuth()
+  @ApiOperation({ summary: "Delete a webhook by ID." })
+  @ApiParam({ name: "id", type: String, description: "Webhook ID." })
+  @ApiNoContentResponse({ description: "Webhook deleted." })
+  @ApiUnauthorizedResponse({ description: "Session is invalid or expired." })
+  @ApiNotFoundResponse({ description: "Webhook was not found." })
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete("/:id")
