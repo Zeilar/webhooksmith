@@ -9,6 +9,7 @@ import { Save, Settings as SettingsIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { isStrongPassword } from "class-validator";
 import { toast } from "sonner";
+import classNames from "classnames";
 
 interface SettingsProps {
   userId: string;
@@ -74,9 +75,7 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
               <h2 className="text-lg font-semibold mb-4">Account</h2>
               <div className="w-full md:w-1/2 space-y-4">
                 <form.AppField name="userId">
-                  {(field) => (
-                    <field.Input label="Id" readOnly disabled inputClassName="font-mono" />
-                  )}
+                  {(field) => <field.Input label="Id" readOnly disabled inputClassName="font-mono" />}
                 </form.AppField>
                 <form.AppField name="username">
                   {(field) => <field.Input label="Username" placeholder={currentUsername} />}
@@ -95,7 +94,7 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
                       <div className="space-y-2">
                         <field.Input label="Password" type="password" placeholder="Optional" />
                         {password && (
-                          <p className={`text-xs ${isStrong ? "text-emerald-400" : "text-amber-400"}`}>
+                          <p className={classNames("text-xs", isStrong ? "text-emerald-400" : "text-amber-400")}>
                             Password strength: {isStrong ? "Strong" : "Weak"}
                           </p>
                         )}
