@@ -59,7 +59,7 @@ export interface FieldLabelProps extends PropsWithChildren, LabelHTMLAttributes<
 }
 
 const fieldClassName =
-  "w-full rounded-lg border border-zinc-700 px-3 py-2 text-sm text-zinc-100 outline-none transition-colors placeholder:text-zinc-500 focus:border-zinc-500";
+  "w-full rounded-lg border border-zinc-700 px-3 py-2 text-sm text-zinc-100 outline-none transition-colors placeholder:text-zinc-500 focus:border-zinc-500 disabled:border-zinc-800 disabled:text-zinc-500 read-only:border-zinc-800 read-only:text-zinc-500";
 
 const labelClassName = "mb-1.5 block text-sm font-medium text-zinc-200";
 
@@ -136,7 +136,7 @@ export function Input({
   type,
   ...props
 }: InputProps) {
-  const { handleBlur, handleChange, state } = useFieldContext<string | number | null | undefined>();
+  const { handleBlur, handleChange, state, name } = useFieldContext<string | number | null | undefined>();
   const [isPasswordVisible, password] = useDisclosure();
   const error = getErrorText(state.meta.errors);
   const canClear = clearValue !== undefined && state.value !== clearValue;
@@ -148,17 +148,17 @@ export function Input({
   return (
     <div className={className}>
       {label && (
-        <FieldLabel required={required} htmlFor={id}>
+        <FieldLabel required={required} htmlFor={id ?? name}>
           {label}
         </FieldLabel>
       )}
       <div className="relative">
         <input
           value={state.value ?? ""}
-          onChange={(e) => handleChange(e.target.value)}
+          onChange={(e) => handleChange(type === "number" ? e.target.valueAsNumber : e.target.value)}
           onBlur={handleBlur}
           className={classNames(fieldClassName, rightPaddingClassName, inputClassName)}
-          id={id}
+          id={id ?? name}
           required={required}
           type={inputType}
           {...props}

@@ -18,23 +18,21 @@ interface SettingsProps {
 
 export function Settings({ currentPerPage, currentUsername, userId }: SettingsProps) {
   const { refresh } = useRouter();
+
   const form = useForm({
     defaultValues: {
+      userId,
       username: "",
       password: "",
       passwordConfirmation: "",
-      perPage: `${currentPerPage}`,
-    } as Required<UpdateUserDto> & {
-      passwordConfirmation: string;
-      perPage: string;
-    },
+      perPage: currentPerPage,
+    } satisfies UpdateUserDto & UpdateSettingsDto & { passwordConfirmation: string; userId: string },
     onSubmit: async ({ value }) => {
       const username = value.username !== currentUsername ? value.username.trim() || undefined : undefined;
       const password = value.password.trim() || undefined;
-      const parsedPerPage = Number(value.perPage);
 
       const shouldUpdateUser = Boolean(username || password);
-      const shouldUpdateSettings = parsedPerPage !== currentPerPage;
+      const shouldUpdateSettings = value.perPage !== currentPerPage;
 
       const requests: Array<Promise<FetcherResult>> = [];
 
@@ -53,7 +51,7 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
           fetcher("/v1/settings", {
             method: "PATCH",
             credentials: "include",
-            body: JSON.stringify({ perPage: parsedPerPage } satisfies UpdateSettingsDto),
+            body: JSON.stringify({ perPage: value.perPage } satisfies UpdateSettingsDto),
           }),
         );
       }
@@ -74,9 +72,14 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
           <form.Form className="space-y-5">
             <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6">
               <h2 className="text-lg font-semibold mb-4">Account</h2>
-              <div className="w-full md:w-1/2">
+              <div className="w-full md:w-1/2 space-y-4">
+                <form.AppField name="userId">
+                  {(field) => (
+                    <field.Input label="Id" readOnly disabled inputClassName="font-mono" />
+                  )}
+                </form.AppField>
                 <form.AppField name="username">
-                  {(field) => <field.Input id="username" label="Username" placeholder={currentUsername} />}
+                  {(field) => <field.Input label="Username" placeholder={currentUsername} />}
                 </form.AppField>
               </div>
             </section>
@@ -90,7 +93,7 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
 
                     return (
                       <div className="space-y-2">
-                        <field.Input id="password" label="Password" type="password" placeholder="Optional" />
+                        <field.Input label="Password" type="password" placeholder="Optional" />
                         {password && (
                           <p className={`text-xs ${isStrong ? "text-emerald-400" : "text-amber-400"}`}>
                             Password strength: {isStrong ? "Strong" : "Weak"}
