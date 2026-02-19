@@ -16,7 +16,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Button, buttonVariants, ErrorAlert, Modal, Panel, Required, ResetButton } from "@/ui/components";
+import { Button, buttonVariants, ErrorAlert, Modal, Panel, Required } from "@/ui/components";
 import { PageContainer, PageShell, PageTitle } from "@/ui/components";
 import { useSocket } from "@/ui";
 import { useForm, useDisclosure } from "@/ui/hooks";
@@ -135,7 +135,7 @@ export function WebhookBuilder({
     },
     onSuccess: () => {
       toast.success("Webhook deleted");
-      push("/webhooks");
+      push("/");
     },
     onError: (error) => {
       toast.error(error instanceof Error ? error.message : "Failed to delete webhook");
@@ -235,7 +235,7 @@ export function WebhookBuilder({
                 </div>
               </Panel>
               <section className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-                <Panel title="Intercepted response" headerClassName="h-15">
+                <Panel title="Intercepted response">
                   <form.AppField name="intercepted">
                     {(field) => <field.Editor options={{ readOnly: true }} />}
                   </form.AppField>
@@ -252,13 +252,6 @@ export function WebhookBuilder({
                         <span>
                           Blueprint <Required />
                         </span>
-                      }
-                      headerClassName="h-15"
-                      headerAction={
-                        <ResetButton
-                          onClick={() => form.resetField("blueprint")}
-                          disabled={field.state.value === blueprint}
-                        />
                       }
                     >
                       <field.Editor />
@@ -294,7 +287,7 @@ export function WebhookBuilder({
                   </form.AppField>
                 )}
               </form.AppField>
-              <Link href="/webhooks" className={buttonVariants({ variant: "outline" })}>
+              <Link href="/" className={buttonVariants({ variant: "outline" })}>
                 Cancel
               </Link>
               {!createMode && (
