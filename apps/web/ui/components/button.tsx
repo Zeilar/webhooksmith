@@ -8,8 +8,8 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-zinc-300 text-zinc-950 hover:bg-zinc-100",
-        secondary: "border border-zinc-700 bg-zinc-800 text-zinc-100 hover:bg-zinc-700",
-        outline: "border border-zinc-700 bg-transparent text-zinc-200 hover:bg-zinc-900/75",
+        secondary: "border-2 border-zinc-700 bg-zinc-800 text-zinc-100 hover:bg-zinc-700",
+        outline: "border-2 border-zinc-700 bg-transparent text-zinc-200 hover:bg-zinc-900/75",
         ghost: "text-zinc-200 hover:bg-zinc-900",
         danger: "bg-red-600/55 text-red-50 hover:bg-red-600/65",
       },

@@ -13,7 +13,7 @@ export function PageTitle({ icon, title, subtitle, action, className }: PageTitl
   return (
     <div className={classNames("mb-8 flex items-center justify-between gap-4", className)}>
       <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900/40">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-zinc-800 bg-zinc-900/40">
           {icon}
         </div>
         <div>

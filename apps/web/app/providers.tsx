@@ -27,7 +27,7 @@ export function Providers({ user, children, socketUrl }: ProvidersProps) {
               toastOptions={{
                 classNames: {
                   toast:
-                    "rounded-xl border border-zinc-700 bg-zinc-900 text-zinc-100 shadow-lg shadow-black/40 backdrop-blur-md select-none",
+                    "rounded-xl border-2 border-zinc-700 bg-zinc-900 text-zinc-100 shadow-lg shadow-black/40 backdrop-blur-md select-none",
                   title: "text-sm font-medium text-zinc-100",
                   description: "text-xs text-zinc-300",
                   actionButton: "!bg-zinc-100 !text-zinc-900 hover:!bg-zinc-200",

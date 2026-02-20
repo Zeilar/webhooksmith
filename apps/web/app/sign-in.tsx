@@ -39,7 +39,7 @@ export function SignIn() {
     <PageShell>
       <PageContainer maxWidthClassName="max-w-md" className="flex min-h-[calc(100vh-10rem)] items-center">
         <form.AppForm>
-          <form.Form className="w-full space-y-4 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6">
+          <form.Form className="w-full space-y-4 rounded-2xl border-2 border-zinc-800 bg-zinc-900/40 p-6">
             <h1 className="text-xl font-semibold">Sign in</h1>
             <form.AppField
               name="username"

@@ -12,11 +12,10 @@ import {
   Trash2,
   Webhook as WebhookIcon,
 } from "lucide-react";
-import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Button, buttonVariants, ErrorAlert, Modal, Panel, Required } from "@/ui/components";
+import { Button, ErrorAlert, Modal, Panel, Required } from "@/ui/components";
 import { PageContainer, PageShell, PageTitle } from "@/ui/components";
 import { useSocket } from "@/ui";
 import { useForm, useDisclosure } from "@/ui/hooks";
@@ -220,7 +219,7 @@ export function WebhookBuilder({
               <Panel title="Intercept">
                 <div className="space-y-2">
                   <p className="text-sm text-zinc-300">Use this URL in your app to intercept a response</p>
-                  <span className="inline-flex max-w-full items-start gap-1 rounded-md border border-zinc-700 bg-zinc-900 px-2 py-1 text-sm text-zinc-100">
+                  <span className="inline-flex max-w-full items-start gap-1 rounded-md border-2 border-zinc-800 bg-zinc-900 px-2 py-1 text-sm text-zinc-100">
                     <code className="min-w-0 break-all">{interceptUrl}</code>
                     <button
                       type="button"
@@ -287,11 +286,6 @@ export function WebhookBuilder({
                   </form.AppField>
                 )}
               </form.AppField>
-              <div className="hidden md:block">
-                <Link href="/" className={buttonVariants({ variant: "outline" })}>
-                  Cancel
-                </Link>
-              </div>
               <Activity mode={!createMode ? "visible" : "hidden"}>
                 <Button type="button" variant="danger" className="ml-auto" onClick={deleteModal.open}>
                   <Trash2 className="h-4 w-4" />
@@ -318,7 +312,7 @@ export function WebhookBuilder({
           description="This action cannot be undone."
           footer={
             <>
-              <Button type="button" variant="outline" onClick={deleteModal.close}>
+              <Button type="button" variant="ghost" onClick={deleteModal.close}>
                 Cancel
               </Button>
               <Button

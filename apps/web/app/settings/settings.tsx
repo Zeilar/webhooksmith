@@ -71,7 +71,7 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
         <PageTitle icon={<SettingsIcon className="h-5 w-5 text-zinc-200" />} title="Settings" className="mb-6" />
         <form.AppForm>
           <form.Form className="space-y-5">
-            <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6">
+            <section className="rounded-2xl border-2 border-zinc-800 bg-zinc-900/40 p-6">
               <h2 className="text-lg font-semibold mb-4">Account</h2>
               <div className="w-full md:w-1/2 space-y-4">
                 <form.AppField name="userId">
@@ -82,7 +82,7 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
                 </form.AppField>
               </div>
             </section>
-            <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6">
+            <section className="rounded-2xl border-2 border-zinc-800 bg-zinc-900/40 p-6">
               <h2 className="text-lg font-semibold mb-4">Security</h2>
               <div className="grid gap-4 lg:grid-cols-2 lg:items-start">
                 <form.AppField name="password">
@@ -126,7 +126,7 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
                 </form.AppField>
               </div>
             </section>
-            <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6">
+            <section className="rounded-2xl border-2 border-zinc-800 bg-zinc-900/40 p-6">
               <h2 className="text-lg font-semibold mb-4">Display</h2>
               <div className="w-full md:w-1/2">
                 <form.AppField

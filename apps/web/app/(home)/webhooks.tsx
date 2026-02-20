@@ -19,9 +19,9 @@ export function WebhooksPage({ webhooks, page, pageSize, total, totalPages }: We
 
   if (webhooks.length === 0 && total === 0) {
     content = (
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-10">
+      <div className="rounded-2xl border-2 border-zinc-800 bg-zinc-950 p-10">
         <div className="mx-auto flex max-w-xl flex-col items-center text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900/40">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-zinc-800 bg-zinc-900/40">
             <WebhookIcon className="h-6 w-6 text-zinc-200" />
           </div>
           <h2 className="mt-4 text-lg font-semibold">No webhooks yet</h2>
@@ -40,7 +40,7 @@ export function WebhooksPage({ webhooks, page, pageSize, total, totalPages }: We
     );
   } else if (webhooks.length === 0) {
     content = (
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-10 text-center">
+      <div className="rounded-2xl border-2 border-zinc-800 bg-zinc-950 p-10 text-center">
         <h2 className="text-lg font-semibold">No webhooks on this page</h2>
         <p className="mt-2 text-sm text-zinc-400">Try going back to a previous page.</p>
       </div>
@@ -52,7 +52,7 @@ export function WebhooksPage({ webhooks, page, pageSize, total, totalPages }: We
           <Link
             key={id}
             href={`/webhooks/${id}`}
-            className="group relative overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/40 p-4 transition-colors duration-150 hover:bg-zinc-900/60"
+            className="group relative overflow-hidden rounded-2xl border-2 border-zinc-800 bg-zinc-900/40 p-4 transition-colors duration-150 hover:bg-zinc-900/60"
           >
             <div className="relative flex items-start justify-between gap-3">
               <div className="min-w-0 space-y-2">

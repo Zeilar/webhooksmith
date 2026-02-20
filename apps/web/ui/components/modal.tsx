@@ -17,7 +17,7 @@ export function Modal({ open, onClose, title, description, children, footer }: M
     <Dialog open={open} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-zinc-950/70 backdrop-blur-sm" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <DialogPanel className="w-full max-w-md rounded-2xl border border-zinc-900 bg-zinc-950 p-6 text-zinc-100 shadow-xl shadow-black/40">
+        <DialogPanel className="w-full max-w-md rounded-2xl border-2 border-zinc-800 bg-zinc-950 p-6 text-zinc-100 shadow-xl shadow-black/40">
           <DialogTitle className="text-lg font-semibold">{title}</DialogTitle>
           {description ? <p className="mt-2 text-sm text-zinc-300">{description}</p> : null}
           {children ? <div className="mt-4">{children}</div> : null}

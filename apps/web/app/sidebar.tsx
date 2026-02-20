@@ -36,7 +36,7 @@ export function Sidebar({ logoutUrl }: SidebarProps) {
 
   return (
     <>
-      <aside className="sticky top-0 hidden h-screen w-65 shrink-0 flex-col border-r border-zinc-800 bg-zinc-950 text-zinc-100 md:flex">
+      <aside className="sticky top-0 hidden h-screen w-65 shrink-0 flex-col border-r-2 border-zinc-800 bg-zinc-950 text-zinc-100 md:flex">
         <div className="flex h-33 items-center px-5 pb-8 pt-15">
           <div className="text-lg font-semibold text-zinc-50">Webhooksmith</div>
         </div>
@@ -62,7 +62,7 @@ export function Sidebar({ logoutUrl }: SidebarProps) {
             })}
           </ul>
         </nav>
-        <div className="border-t border-zinc-800 p-4">
+        <div className="border-t-2 border-zinc-800 p-4">
           <a
             href={logoutHref}
             className="flex w-full items-center gap-3.5 rounded-lg px-3.5 py-2.5 text-left text-base text-zinc-300 transition-colors hover:bg-zinc-900 hover:text-zinc-50"
@@ -72,7 +72,7 @@ export function Sidebar({ logoutUrl }: SidebarProps) {
           </a>
         </div>
       </aside>
-      <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-zinc-800 bg-zinc-950/95 px-4 py-2 backdrop-blur md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-50 border-t-2 border-zinc-800 bg-zinc-950/95 px-4 py-2 backdrop-blur md:hidden">
         <ul className="flex items-center justify-around">
           {items.map(({ url, label, icon }) => {
             const isActive = url === pathname;

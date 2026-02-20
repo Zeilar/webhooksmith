@@ -59,7 +59,7 @@ export interface FieldLabelProps extends PropsWithChildren, LabelHTMLAttributes<
 }
 
 const fieldClassName =
-  "w-full rounded-lg border border-zinc-700 px-3 py-2 text-sm text-zinc-100 outline-none transition-colors placeholder:text-zinc-500 focus:border-zinc-500 disabled:border-zinc-800 disabled:text-zinc-500 read-only:border-zinc-800 read-only:text-zinc-500";
+  "w-full rounded-lg border-2 border-zinc-800 px-3 py-2 text-sm text-zinc-100 outline-none transition-colors placeholder:text-zinc-500 focus:border-zinc-500 active:border-zinc-500 disabled:border-zinc-900 disabled:text-zinc-500 read-only:border-zinc-900 read-only:text-zinc-500";
 
 const labelClassName = "mb-1.5 block text-sm font-medium text-zinc-200";
 
@@ -265,7 +265,7 @@ export function Editor({
   return (
     <div className={className}>
       {label && <FieldLabel required={required}>{label}</FieldLabel>}
-      <div className={`overflow-hidden rounded-xl border border-zinc-800 ${editorClassName ?? ""}`}>
+      <div className={`overflow-hidden rounded-xl border-2 border-zinc-800 ${editorClassName ?? ""}`}>
         <MonacoEditor
           value={state.value ?? ""}
           onChange={(value) => handleChange(value ?? "")}
