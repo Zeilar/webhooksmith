@@ -25,6 +25,8 @@ services:
     restart: unless-stopped
     env_file:
       - apps/api/.env
+    # Set up tables etc if they don't exist, I recommend letting the CLI do this
+    # You may remove this whole line after the initial setup, if not then be sure to backup data in case of updates
     command: sh -c "pnpm db:push && node dist/main"
     depends_on:
       db:
