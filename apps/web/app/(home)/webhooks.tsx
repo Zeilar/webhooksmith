@@ -54,8 +54,9 @@ export function WebhooksPage({ webhooks, page, pageSize, total, totalPages }: We
             href={`/webhooks/${id}`}
             className="group relative overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950 p-4 transition-colors duration-150 hover:border-zinc-800/90 hover:bg-zinc-900/30"
           >
+            <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-zinc-100/4 via-transparent to-zinc-100/2.5" />
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-zinc-700/20 opacity-0 transition-opacity group-hover:opacity-100" />
-            <div className="flex items-start justify-between gap-3">
+            <div className="relative flex items-start justify-between gap-3">
               <div className="min-w-0 space-y-2">
                 <div className="truncate text-md font-semibold text-zinc-100">{name}</div>
                 {description && <div className="line-clamp-3 text-sm text-zinc-400">{description}</div>}
