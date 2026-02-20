@@ -84,7 +84,7 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
             </section>
             <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6">
               <h2 className="text-lg font-semibold mb-4">Security</h2>
-              <div className="grid gap-4 md:grid-cols-2 md:items-start">
+              <div className="grid gap-4 lg:grid-cols-2 lg:items-start">
                 <form.AppField name="password">
                   {(field) => {
                     const password = field.state.value?.trim();

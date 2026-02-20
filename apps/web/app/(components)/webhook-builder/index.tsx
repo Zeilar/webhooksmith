@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { Activity, useEffect, useRef } from "react";
 import {
   Check,
   CircleCheck,
@@ -220,13 +220,13 @@ export function WebhookBuilder({
               <Panel title="Intercept">
                 <div className="space-y-2">
                   <p className="text-sm text-zinc-300">Use this URL in your app to intercept a response</p>
-                  <span className="inline-flex items-center gap-1 rounded-md border border-zinc-700 bg-zinc-900 px-2 py-1 text-sm text-zinc-100">
-                    <code>{interceptUrl}</code>
+                  <span className="inline-flex max-w-full items-start gap-1 rounded-md border border-zinc-700 bg-zinc-900 px-2 py-1 text-sm text-zinc-100">
+                    <code className="min-w-0 break-all">{interceptUrl}</code>
                     <button
                       type="button"
                       onClick={copyInterceptUrl}
                       aria-label="Copy intercept URL"
-                      className="ml-1 rounded p-0.5 text-zinc-300 transition-colors hover:bg-zinc-900 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-40"
+                      className="ml-1 mt-0.5 shrink-0 rounded p-0.5 text-zinc-300 transition-colors hover:bg-zinc-900 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-40"
                       title={isCopiedVisible ? "Copied" : "Copy"}
                     >
                       {isCopiedVisible ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
@@ -234,7 +234,7 @@ export function WebhookBuilder({
                   </span>
                 </div>
               </Panel>
-              <section className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+              <section className="grid grid-cols-1 gap-6 2xl:grid-cols-2">
                 <Panel title="Intercepted response">
                   <form.AppField name="intercepted">
                     {(field) => <field.Editor options={{ readOnly: true }} />}
@@ -260,7 +260,7 @@ export function WebhookBuilder({
                 </form.AppField>
               </section>
             </div>
-            <div className="mt-6 flex items-center gap-3">
+            <div className="mt-6 flex flex-wrap items-center gap-3">
               <form.SubmitButton
                 className="h-full"
                 icon={createMode ? <Rocket className="h-4 w-4" /> : <Save className="h-4 w-4" />}
@@ -287,28 +287,30 @@ export function WebhookBuilder({
                   </form.AppField>
                 )}
               </form.AppField>
-              <Link href="/" className={buttonVariants({ variant: "outline" })}>
-                Cancel
-              </Link>
-              {!createMode && (
+              <div className="hidden md:block">
+                <Link href="/" className={buttonVariants({ variant: "outline" })}>
+                  Cancel
+                </Link>
+              </div>
+              <Activity mode={!createMode ? "visible" : "hidden"}>
                 <Button type="button" variant="danger" className="ml-auto" onClick={deleteModal.open}>
                   <Trash2 className="h-4 w-4" />
                   <span>Delete</span>
                 </Button>
-              )}
+              </Activity>
             </div>
-            {testMutation.isError && (
+            <Activity mode={testMutation.isError ? "visible" : "hidden"}>
               <ErrorAlert
                 title="Test request failed"
                 message={testErrorMessage}
                 cause={testErrorCause}
                 className="mt-3"
               />
-            )}
+            </Activity>
           </PageContainer>
         </PageShell>
       </form.Form>
-      {!createMode && (
+      <Activity mode={!createMode ? "visible" : "hidden"}>
         <Modal
           open={isDeleteModalOpen}
           onClose={deleteModal.close}
@@ -335,7 +337,7 @@ export function WebhookBuilder({
             </>
           }
         />
-      )}
+      </Activity>
     </form.AppForm>
   );
 }

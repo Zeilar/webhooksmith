@@ -12,7 +12,12 @@ interface PageContainerProps extends PropsWithChildren {
 
 export function PageShell({ children, className }: PageShellProps) {
   return (
-    <main className={classNames("min-h-screen w-full bg-zinc-950 px-20 pt-15 pb-5 text-zinc-100", className)}>
+    <main
+      className={classNames(
+        "min-h-screen w-full bg-zinc-950 px-4 pb-24 pt-6 text-zinc-100 sm:px-6 lg:px-10 lg:pb-6 lg:pt-10 xl:px-16",
+        className,
+      )}
+    >
       {children}
     </main>
   );
