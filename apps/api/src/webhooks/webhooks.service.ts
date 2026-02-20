@@ -74,7 +74,7 @@ export class WebhooksService {
   public async update(id: string, dto: UpdateWebhookDto) {
     try {
       Logger.verbose(`Updating webhook with id: ${id}`, WebhooksService.name);
-      const result = await this.db.update(webhooks).set(dto).where(eq(webhooks.id, id)).limit(1);
+      const [result] = await this.db.update(webhooks).set(dto).where(eq(webhooks.id, id)).returning();
       Logger.log(`Updated webhook with id: ${id}`, WebhooksService.name);
       return result;
     } catch (error) {
@@ -86,7 +86,7 @@ export class WebhooksService {
   public async delete(id: string) {
     try {
       Logger.verbose(`Deleting webhook with id: ${id}`, WebhooksService.name);
-      const result = await this.db.delete(webhooks).where(eq(webhooks.id, id)).limit(1);
+      const [result] = await this.db.delete(webhooks).where(eq(webhooks.id, id)).returning();
       Logger.log(`Deleted webhook with id: ${id}`, WebhooksService.name);
       return result;
     } catch (error) {

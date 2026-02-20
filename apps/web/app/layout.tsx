@@ -13,6 +13,8 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Webhooksmith",
   description: "Take control of your services' webhooks.",

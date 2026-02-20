@@ -22,11 +22,14 @@ export class UsersService {
         Logger.error(message, UsersService.name);
         throw new ConflictException(message);
       }
-      const user = await this.db.insert(users).values({
-        ...dto,
-        password: await this.hashPassword(password),
-        id: randomBase58(),
-      });
+      const [user] = await this.db
+        .insert(users)
+        .values({
+          ...dto,
+          password: await this.hashPassword(password),
+          id: randomBase58(),
+        })
+        .returning();
       Logger.log(`Created user with username: ${username}`, UsersService.name);
       return user;
     } catch (error) {

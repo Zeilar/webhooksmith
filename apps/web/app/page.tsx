@@ -21,7 +21,7 @@ export default async function Page({ searchParams }: HomePageProps) {
   const page = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1;
   const pageSize = Number.isFinite(parsedPageSize) && parsedPageSize > 0 ? parsedPageSize : defaultPageSize;
   const query = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
-  const { data } = await fetcher<PaginatedWebhooksDto>(`/v1/webhooks?${query.toString()}`, {
+  const { data } = await fetcher<PaginatedWebhooksDto>(`/v1/webhooks?${query}`, {
     headers: cookieHeader,
   });
 

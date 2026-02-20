@@ -65,3 +65,5 @@ venv/
 *.db
 *.db*
 .zfs
+data/*
+!data/.gitkeep

@@ -2,13 +2,12 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
-import { DrizzleBetterSQLiteModule } from "@knaadh/nestjs-drizzle-better-sqlite3";
 import { WsModule } from "../ws/ws.module";
 import { WebhooksModule } from "../webhooks/webhooks.module";
-import { schema } from "@workspace/lib/db/schema";
 import { UsersModule } from "@/users/users.module";
 import { AuthModule } from "@/auth/auth.module";
 import { SettingsModule } from "@/settings/settings.module";
+import { DbModule } from "@/db/db.module";
 import { z } from "zod";
 
 const envSchema = z
@@ -17,6 +16,12 @@ const envSchema = z
       .union([z.literal("true"), z.literal("false"), z.literal("")])
       .optional()
       .default("false"),
+    DB_HOST: z.string().trim().min(1),
+    DB_PORT: z.coerce.number().int().min(1).max(65535).default(5432),
+    DB_NAME: z.string().trim().min(1),
+    DB_USER: z.string().trim().min(1),
+    DB_PASSWORD: z.string().trim().min(1),
+    NODE_ENV: z.enum(["development", "test", "production"]),
     LOG_LEVEL: z.enum(["verbose", "debug", "log", "warn", "error"]),
     PORT: z.coerce.number().int().min(1).max(65535).default(3030),
     ALLOWED_ORIGINS: z.string().trim().min(1),
@@ -49,16 +54,12 @@ const envSchema = z
       cache: true,
       validate: (config) => envSchema.parse(config),
     }),
-    DrizzleBetterSQLiteModule.register({
-      tag: "DrizzleDB",
-      sqlite3: { filename: "./data/webhooksmith.db" },
-      config: { schema, logger: process.env.DB_LOGGING === "true" },
-    }),
     WsModule,
     WebhooksModule,
     UsersModule,
     AuthModule,
     SettingsModule,
+    DbModule,
   ],
   controllers: [AppController],
   providers: [AppService],

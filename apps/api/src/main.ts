@@ -4,7 +4,6 @@ import { Logger, ValidationPipe, type LogLevel } from "@nestjs/common";
 import { UsersService } from "./users/users.service";
 import { SettingsService } from "./settings/settings.service";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import type { Request, Response, NextFunction } from "express";
 import { COOKIE_NAME } from "./auth/auth.config";
 
 const PORT = process.env.PORT ?? 3030;
@@ -37,44 +36,6 @@ function isSwaggerEnabled(): boolean {
   return process.env.NODE_ENV !== "production";
 }
 
-function parseBasicAuthHeader(authHeader: string): { username: string; password: string } | null {
-  if (!authHeader.startsWith("Basic ")) {
-    return null;
-  }
-  const base64 = authHeader.slice(6).trim();
-  const decoded = Buffer.from(base64, "base64").toString("utf8");
-  const separatorIndex = decoded.indexOf(":");
-  if (separatorIndex === -1) {
-    return null;
-  }
-  return {
-    username: decoded.slice(0, separatorIndex),
-    password: decoded.slice(separatorIndex + 1),
-  };
-}
-
-function createSwaggerBasicAuthMiddleware() {
-  const username = process.env.SWAGGER_USERNAME?.trim();
-  const password = process.env.SWAGGER_PASSWORD?.trim();
-
-  if (!username || !password) {
-    return null;
-  }
-
-  return (req: Request, res: Response, next: NextFunction): void => {
-    const authHeader = req.headers.authorization;
-    const credentials = authHeader ? parseBasicAuthHeader(authHeader) : null;
-
-    if (!credentials || credentials.username !== username || credentials.password !== password) {
-      res.setHeader("WWW-Authenticate", 'Basic realm="Swagger"');
-      res.status(401).send("Authentication required.");
-      return;
-    }
-
-    next();
-  };
-}
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: resolveLogLevels(process.env.LOG_LEVEL),
@@ -98,42 +59,17 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   if (isSwaggerEnabled()) {
-    if (process.env.NODE_ENV === "production") {
-      const swaggerAuthMiddleware = createSwaggerBasicAuthMiddleware();
-      if (!swaggerAuthMiddleware) {
-        Logger.warn(
-          "SWAGGER_ENABLED=true but SWAGGER_USERNAME/SWAGGER_PASSWORD are missing. Swagger is disabled in production.",
-          "Bootstrap",
-        );
-        Logger.log("Swagger is disabled", "Bootstrap");
-      } else {
-        app.use(`/${SWAGGER_PATH}`, swaggerAuthMiddleware);
-        app.use(`/${SWAGGER_PATH}-json`, swaggerAuthMiddleware);
-        const swaggerConfig = new DocumentBuilder()
-          .setTitle("Webhooksmith API")
-          .setDescription("HTTP API for managing webhook blueprints, users, auth sessions, and settings.")
-          .setVersion("1.0")
-          .addCookieAuth(COOKIE_NAME, undefined, "cookie")
-          .build();
-        const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
-        SwaggerModule.setup(SWAGGER_PATH, app, swaggerDocument, {
-          swaggerOptions: { persistAuthorization: true },
-        });
-        Logger.log(`Swagger available at /${SWAGGER_PATH}`, "Bootstrap");
-      }
-    } else {
-      const swaggerConfig = new DocumentBuilder()
-        .setTitle("Webhooksmith API")
-        .setDescription("HTTP API for managing webhook blueprints, users, auth sessions, and settings.")
-        .setVersion("1.0")
-        .addCookieAuth(COOKIE_NAME, undefined, "cookie")
-        .build();
-      const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
-      SwaggerModule.setup(SWAGGER_PATH, app, swaggerDocument, {
-        swaggerOptions: { persistAuthorization: true },
-      });
-      Logger.log(`Swagger available at /${SWAGGER_PATH}`, "Bootstrap");
-    }
+    const swaggerConfig = new DocumentBuilder()
+      .setTitle("Webhooksmith API")
+      .setDescription("HTTP API for managing webhook blueprints, users, auth sessions, and settings.")
+      .setVersion("1.0")
+      .addCookieAuth(COOKIE_NAME, undefined, "cookie")
+      .build();
+    const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
+    SwaggerModule.setup(SWAGGER_PATH, app, swaggerDocument, {
+      swaggerOptions: { persistAuthorization: true },
+    });
+    Logger.log(`Swagger available at ${SWAGGER_PATH}`, "Bootstrap");
   } else {
     Logger.log("Swagger is disabled", "Bootstrap");
   }

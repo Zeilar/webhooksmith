@@ -1,0 +1,72 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: webhooksmith_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: webhooksmith
+      POSTGRES_USER: webhooksmith
+      POSTGRES_PASSWORD: password # Change me
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U webhooksmith -d webhooksmith"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    volumes:
+      # I recommend using an absolute path on the host, and that you back that directory up
+      - ./data:/var/lib/postgresql/data
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: webhooksmith_api
+    restart: unless-stopped
+    env_file:
+      - apps/api/.env
+    command: sh -c "pnpm db:push && node dist/main"
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - 3030:3030
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: webhooksmith
+      DB_USER: webhooksmith
+      DB_PASSWORD: password # Change me
+      DB_LOGGING: false
+      LOG_LEVEL: verbose
+      PORT: 3030
+      WEB_HOST: 0.0.0.0
+      ALLOWED_ORIGINS: web,webhooksmith.angelin.foo
+      COOKIE_DOMAIN: .angelin.foo
+      SESSION_TTL: 604800000
+      SWAGGER_ENABLED: true
+      SWAGGER_PATH: /docs
+      INITIAL_USERNAME: admin
+      INITIAL_PASSWORD: password
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: webhooksmith_web
+    restart: unless-stopped
+    env_file:
+      - apps/web/.env
+    environment:
+      NODE_ENV: production
+      API_URL: https://api-webhooksmith.angelin.foo
+      SOCKET_URL: wss://api-webhooksmith.angelin.foo
+      NEXT_TELEMETRY_DISABLED: 1
+    ports:
+      - 3000:3000
+    depends_on:
+      - api
+
+networks:
+  webhooksmith_network:
+    name: webhooksmith_network
+    external: false

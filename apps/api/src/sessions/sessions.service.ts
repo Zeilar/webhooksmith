@@ -39,7 +39,7 @@ export class SessionsService {
   public async deleteById(id: string): Promise<void> {
     try {
       Logger.verbose(`Deleting session with id: ${id}`, SessionsService.name);
-      await this.db.delete(sessions).where(eq(sessions.id, id)).limit(1);
+      await this.db.delete(sessions).where(eq(sessions.id, id));
       Logger.log(`Deleted session with id: ${id}`, SessionsService.name);
     } catch (error) {
       Logger.error(`Failed to delete session with id: ${id}`, SessionsService.name);
