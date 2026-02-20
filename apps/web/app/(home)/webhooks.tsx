@@ -25,9 +25,7 @@ export function WebhooksPage({ webhooks, page, pageSize, total, totalPages }: We
             <WebhookIcon className="h-6 w-6 text-zinc-200" />
           </div>
           <h2 className="mt-4 text-lg font-semibold">No webhooks yet</h2>
-          <p className="mt-2 text-sm text-zinc-400">
-            Create your first webhook to start receiving payloads and building templates.
-          </p>
+          <p className="mt-2 text-sm text-zinc-400">Create your first webhook to start forging webhook blueprints</p>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/webhooks/new"
@@ -92,10 +90,7 @@ export function WebhooksPage({ webhooks, page, pageSize, total, totalPages }: We
           </p>
           <div className="flex items-center gap-3">
             {page > 1 ? (
-              <Link
-                href={`/?page=${page - 1}&pageSize=${pageSize}`}
-                className={buttonVariants({ variant: "outline" })}
-              >
+              <Link href={`/?page=${page - 1}&pageSize=${pageSize}`} className={buttonVariants({ variant: "outline" })}>
                 <ChevronLeft className="h-4 w-4" />
                 Previous
               </Link>
@@ -111,10 +106,7 @@ export function WebhooksPage({ webhooks, page, pageSize, total, totalPages }: We
               </span>
             )}
             {page < totalPages ? (
-              <Link
-                href={`/?page=${page + 1}&pageSize=${pageSize}`}
-                className={buttonVariants({ variant: "outline" })}
-              >
+              <Link href={`/?page=${page + 1}&pageSize=${pageSize}`} className={buttonVariants({ variant: "outline" })}>
                 Next
                 <ChevronRight className="h-4 w-4" />
               </Link>

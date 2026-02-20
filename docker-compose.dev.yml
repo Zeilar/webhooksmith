@@ -1,0 +1,19 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: webhooksmith_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: webhooksmith
+      POSTGRES_USER: webhooksmith
+      POSTGRES_PASSWORD: password # Change me
+    ports:
+      - 5432:5432
+    volumes:
+      # I recommend using an absolute path on the host, and that you back that directory up
+      - ./data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U webhooksmith -d webhooksmith"]
+      interval: 5s
+      timeout: 5s
+      retries: 20

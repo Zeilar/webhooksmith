@@ -9,14 +9,16 @@ services:
       POSTGRES_PASSWORD: password # Change me
     ports:
       - 5432:5432
+    volumes:
+      # I recommend using an absolute path on the host, and that you back that directory up
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - webhooksmith_network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U webhooksmith -d webhooksmith"]
       interval: 5s
       timeout: 5s
       retries: 20
-    volumes:
-      # I recommend using an absolute path on the host, and that you back that directory up
-      - ./data:/var/lib/postgresql/data
   api:
     build:
       context: .
@@ -25,14 +27,6 @@ services:
     restart: unless-stopped
     env_file:
       - apps/api/.env
-    # Set up tables etc if they don't exist, I recommend letting the CLI do this
-    # You may remove this whole line after the initial setup, if not then be sure to backup data in case of updates
-    command: sh -c "pnpm db:push && node dist/main"
-    depends_on:
-      db:
-        condition: service_healthy
-    ports:
-      - 3030:3030
     environment:
       DB_HOST: db
       DB_PORT: 5432
@@ -50,6 +44,16 @@ services:
       SWAGGER_PATH: /docs
       INITIAL_USERNAME: admin
       INITIAL_PASSWORD: password
+    # Set up tables etc if they don't exist, I recommend letting the CLI do this
+    # You may remove this whole line after the initial setup, if not then be sure to backup data in case of updates
+    command: sh -c "pnpm db:push && node dist/main"
+    ports:
+      - 3030:3030
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - webhooksmith_network
   web:
     build:
       context: .
@@ -67,6 +71,8 @@ services:
       - 3000:3000
     depends_on:
       - api
+    networks:
+      - webhooksmith_network
 
 networks:
   webhooksmith_network:
