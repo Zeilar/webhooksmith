@@ -8,7 +8,6 @@ import {
   HttpException,
   HttpStatus,
   Logger,
-  NotFoundException,
   Param,
   Post,
   Put,
@@ -25,6 +24,7 @@ import {
 import { WsGateway } from "@/ws/ws.gateway";
 import { WebhooksService } from "./webhooks.service";
 import { AuthGuard } from "@/auth/auth.guard";
+import { WebhookExistsGuard } from "./webhook-exists.guard";
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -55,12 +55,6 @@ export class WebhooksController {
   private parsePositiveInt(raw: string | undefined, fallback: number): number {
     const value = parseInt(raw ?? "", 10);
     return isFinite(value) && value > 0 ? value : fallback;
-  }
-
-  private async assertWebhookExists(id: string): Promise<void> {
-    if (!(await this.webhooksService.exists(id))) {
-      throw new NotFoundException();
-    }
   }
 
   /**
@@ -94,7 +88,7 @@ export class WebhooksController {
   @ApiOkResponse({ description: "Webhook found." })
   @ApiUnauthorizedResponse({ description: "Session is invalid or expired." })
   @ApiNotFoundResponse({ description: "Webhook was not found." })
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, WebhookExistsGuard)
   @HttpCode(HttpStatus.OK)
   @Get("/:id")
   public findWebhookById(@Param("id") id: string): Promise<Webhook> {
@@ -184,11 +178,10 @@ export class WebhooksController {
   @ApiNoContentResponse({ description: "Webhook updated." })
   @ApiUnauthorizedResponse({ description: "Session is invalid or expired." })
   @ApiNotFoundResponse({ description: "Webhook was not found." })
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, WebhookExistsGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Put("/:id")
   public async update(@Param("id") id: string, @Body() dto: UpdateWebhookDto): Promise<void> {
-    await this.assertWebhookExists(id);
     await this.webhooksService.update(id, dto);
   }
 
@@ -198,11 +191,10 @@ export class WebhooksController {
   @ApiNoContentResponse({ description: "Webhook deleted." })
   @ApiUnauthorizedResponse({ description: "Session is invalid or expired." })
   @ApiNotFoundResponse({ description: "Webhook was not found." })
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, WebhookExistsGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete("/:id")
   public async delete(@Param("id") id: string): Promise<void> {
-    await this.assertWebhookExists(id);
     await this.webhooksService.delete(id);
   }
 }
