@@ -10,7 +10,7 @@ import type {
 } from "react";
 import MonacoEditor, { type EditorProps as MonacoEditorProps } from "@monaco-editor/react";
 import { Eye, EyeOff, LoaderCircle, X } from "lucide-react";
-import { Button, Required } from "@/ui/components";
+import { Button, Required, Switch as UISwitch, type SwitchProps as UISwitchProps } from "@/ui/components";
 import { useFieldContext, useFormContext } from "./context";
 import classNames from "classnames";
 import { useDisclosure } from "../useDisclosure";
@@ -51,6 +51,11 @@ export type SelectProps = BaseFieldProps &
 export type EditorProps = BaseFieldProps &
   Pick<MonacoEditorProps, "height" | "language" | "options"> & {
     editorClassName?: string;
+  };
+
+export type SwitchProps = BaseFieldProps &
+  Omit<UISwitchProps, "checked" | "onCheckedChange"> & {
+    switchClassName?: string;
   };
 
 export interface FieldLabelProps extends PropsWithChildren, LabelHTMLAttributes<HTMLLabelElement> {
@@ -244,6 +249,32 @@ export function Select({ label, helperText, options, placeholder, className, req
           </option>
         ))}
       </select>
+      <FieldHelperText error={error} helperText={helperText} />
+    </div>
+  );
+}
+
+export function Switch({ label, helperText, className, switchClassName, required, id, ...props }: SwitchProps) {
+  const { handleBlur, handleChange, state, name } = useFieldContext<boolean>();
+  const error = getErrorText(state.meta.errors);
+  const switchId = id ?? name;
+  const checked = Boolean(state.value);
+
+  return (
+    <div className={className}>
+      {label && (
+        <FieldLabel required={required} htmlFor={switchId}>
+          {label}
+        </FieldLabel>
+      )}
+      <UISwitch
+        {...props}
+        id={switchId}
+        checked={checked}
+        onBlur={handleBlur}
+        onCheckedChange={(nextChecked) => handleChange(nextChecked)}
+        className={switchClassName}
+      />
       <FieldHelperText error={error} helperText={helperText} />
     </div>
   );

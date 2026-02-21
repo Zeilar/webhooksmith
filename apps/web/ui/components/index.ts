@@ -6,3 +6,4 @@ export * from "./page";
 export * from "./page-title";
 export * from "./reset-button";
 export * from "./required";
+export * from "./switch";

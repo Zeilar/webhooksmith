@@ -5,6 +5,7 @@ import type { Webhook } from "@workspace/lib/db/schema";
 import classNames from "classnames";
 import { buttonVariants } from "@/ui/components/button";
 import { PageContainer, PageShell, PageTitle } from "@/ui/components";
+import { WebhookEnabledSwitch } from "./webhook-enabled-switch";
 
 interface WebhooksPageProps {
   webhooks: Webhook[];
@@ -48,19 +49,25 @@ export function WebhooksPage({ webhooks, page, pageSize, total, totalPages }: We
   } else {
     content = (
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {webhooks.map(({ id, name, description }) => (
-          <Link
+        {webhooks.map(({ id, name, description, enabled }) => (
+          <div
             key={id}
-            href={`/webhooks/${id}`}
             className="group relative overflow-hidden rounded-2xl border-2 border-zinc-800 bg-zinc-900/40 p-4 transition-colors duration-150 hover:bg-zinc-900/60"
           >
-            <div className="relative flex items-start justify-between gap-3">
-              <div className="min-w-0 space-y-2">
+            <div className="relative flex items-start justify-between gap-4">
+              <Link href={`/webhooks/${id}`} className="min-w-0 flex-1 space-y-2">
                 <div className="truncate text-md font-semibold text-zinc-100">{name}</div>
-                {description && <div className="line-clamp-3 text-sm text-zinc-400">{description}</div>}
+                {description ? (
+                  <div className="line-clamp-3 text-sm text-zinc-400">{description}</div>
+                ) : (
+                  <div className="text-sm text-zinc-500">No description</div>
+                )}
+              </Link>
+              <div className="shrink-0">
+                <WebhookEnabledSwitch webhookId={id} initialEnabled={enabled ?? true} />
               </div>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     );

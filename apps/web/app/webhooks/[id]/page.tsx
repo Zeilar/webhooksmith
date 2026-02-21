@@ -24,6 +24,7 @@ export default async function Page({ params }: PageProps<"/webhooks/[id]">) {
       description={data?.description ?? ""}
       blueprint={data?.blueprint}
       receiver={data?.receiver}
+      enabled={data?.enabled ?? true}
       interceptId={randomBase58()}
       createMode={false}
     />

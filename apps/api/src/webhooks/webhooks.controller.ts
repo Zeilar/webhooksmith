@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -25,7 +26,9 @@ import { WsGateway } from "@/ws/ws.gateway";
 import { WebhooksService } from "./webhooks.service";
 import { AuthGuard } from "@/auth/auth.guard";
 import {
+  ApiBadRequestResponse,
   ApiBody,
+  ApiConflictResponse,
   ApiCookieAuth,
   ApiCreatedResponse,
   ApiNoContentResponse,
@@ -69,11 +72,16 @@ export class WebhooksController {
   @ApiParam({ name: "id", type: String, description: "Webhook ID." })
   @ApiBody({ schema: { type: "object", additionalProperties: true } })
   @ApiOkResponse({ description: "Payload forwarded to receiver." })
+  @ApiConflictResponse({ description: "Webhook is disabled." })
   @ApiNotFoundResponse({ description: "Webhook was not found." })
+  @ApiBadRequestResponse({ description: "Webhook is disabled." })
   @HttpCode(HttpStatus.OK)
   @Post("/:id/send")
   public async receiveAndSend(@Param("id") id: string, @Body() body: object): Promise<Response> {
-    const { blueprint, receiver } = await this.webhooksService.findById(id);
+    const { blueprint, receiver, enabled } = await this.webhooksService.findById(id);
+    if (!enabled) {
+      throw new BadRequestException("Webhook is disabled.");
+    }
     const output = this.webhooksService.findAndReplaceMappings(body, blueprint);
     return fetch(receiver, {
       method: "POST",

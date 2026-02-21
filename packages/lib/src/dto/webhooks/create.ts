@@ -1,4 +1,4 @@
-import { IsJSON, IsOptional, IsString, IsUrl } from "class-validator";
+import { IsBoolean, IsJSON, IsOptional, IsString, IsUrl } from "class-validator";
 import type { Webhook } from "../../db/schema";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
@@ -19,4 +19,9 @@ export class CreateWebhookDto implements Partial<Webhook> {
   @ApiProperty()
   @IsUrl()
   public receiver: string;
+
+  @ApiPropertyOptional({ default: true })
+  @IsBoolean()
+  @IsOptional()
+  public enabled?: boolean;
 }

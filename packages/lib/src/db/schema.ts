@@ -1,5 +1,5 @@
 import type { InferInsertModel } from "drizzle-orm";
-import { integer, text, pgTable } from "drizzle-orm/pg-core";
+import { boolean, integer, text, pgTable } from "drizzle-orm/pg-core";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 
 export type Webhook = InferInsertModel<typeof webhooks>;
@@ -32,6 +32,10 @@ export const webhooks = pgTable("webhooks", {
    * URL of the final webhook that the user would've instead of this service.
    */
   receiver: text().notNull(),
+  /**
+   * Whether this webhook is allowed to receive and forward payloads.
+   */
+  enabled: boolean("enabled").notNull().default(true),
   createdAt,
   updatedAt,
 });

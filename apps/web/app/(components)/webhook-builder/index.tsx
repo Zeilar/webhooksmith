@@ -29,6 +29,7 @@ interface WebhookBuilderProps {
   description?: string;
   receiver?: string;
   blueprint?: string;
+  enabled?: boolean;
   interceptId: string;
   createMode: boolean;
 }
@@ -40,6 +41,7 @@ export function WebhookBuilder({
   description = "",
   blueprint = "",
   receiver = "",
+  enabled = true,
   interceptId,
   createMode,
 }: WebhookBuilderProps) {
@@ -52,7 +54,7 @@ export function WebhookBuilder({
   const copyResetTimeoutRef = useRef<SetTimeout | null>(null);
   const testSuccessTimeoutRef = useRef<SetTimeout | null>(null);
   const form = useForm({
-    defaultValues: { name, description, receiver, blueprint, intercepted: "" } satisfies CreateWebhookDto & {
+    defaultValues: { name, description, receiver, blueprint, enabled, intercepted: "" } satisfies CreateWebhookDto & {
       intercepted: string;
     },
     onSubmit: ({ value }) => {
@@ -61,6 +63,7 @@ export function WebhookBuilder({
         description: value.description.trim(),
         blueprint: value.blueprint.trim(),
         receiver: value.receiver.trim(),
+        enabled: value.enabled,
       };
       if (createMode) {
         return createOnSubmit(dto, (id) => push(`/webhooks/${id}`));
@@ -190,6 +193,7 @@ export function WebhookBuilder({
             <div className="grid grid-cols-1 gap-6">
               <Panel title="Details">
                 <div className="space-y-3">
+                  <form.AppField name="enabled">{(field) => <field.Switch label="Enabled" />}</form.AppField>
                   <div className="w-full md:w-1/2">
                     <form.AppField name="name">
                       {(field) => <field.Input id="name-input" label="Name" type="text" required />}
