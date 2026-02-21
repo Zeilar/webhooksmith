@@ -38,6 +38,7 @@
     "cookie": "^1.1.1",
     "drizzle-orm": "^0.45.1",
     "pg": "^8.13.1",
+    "pg-mem": "^3.0.13",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "socket.io": "4.8.3",
@@ -87,6 +88,11 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/$1",
+      "^src/(.*)$": "<rootDir>/$1",
+      "^@workspace/lib/(.*)$": "<rootDir>/../../../packages/lib/src/$1"
+    }
   }
 }

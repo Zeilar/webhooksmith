@@ -12,7 +12,8 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "drizzle-orm": "^0.45.1",
-    "pg": "^8.13.1"
+    "pg": "^8.13.1",
+    "pg-mem": "^3.0.13"
   },
   "devDependencies": {
     "@types/node": "24",
