@@ -15,7 +15,7 @@ declare global {
       NODE_ENV?: "development" | "test" | "production";
       LOG_LEVEL?: "error" | "warn" | "log" | "debug" | "verbose";
       PORT?: string;
-      WEB_HOST: string;
+      HOST?: string;
       ALLOWED_ORIGINS: string;
       COOKIE_DOMAIN: string;
       SESSION_TTL: string;

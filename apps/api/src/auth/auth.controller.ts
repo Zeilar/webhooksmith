@@ -64,7 +64,7 @@ export class AuthController {
       try {
         await this.authService.logout(sessionId);
       } catch {
-        Logger.warn(`Failed to log out session with id: ${sessionId}. Continuing with redirect.`, AuthController.name);
+        Logger.warn(`Failed to log out session with id: ${sessionId}, continuing with redirect`, AuthController.name);
       }
     }
 

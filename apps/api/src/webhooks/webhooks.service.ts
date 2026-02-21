@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { desc, eq } from "drizzle-orm";
 import { compileBlueprint } from "src/webhooks/common/compile-blueprint";
 import { type Webhook, webhooks, type DrizzleDb } from "@workspace/lib/db/schema";
@@ -75,6 +75,9 @@ export class WebhooksService {
     try {
       Logger.verbose(`Updating webhook with id: ${id}`, WebhooksService.name);
       const [result] = await this.db.update(webhooks).set(dto).where(eq(webhooks.id, id)).returning();
+      if (!result) {
+        throw new InternalServerErrorException("Failed to update webhook.");
+      }
       Logger.log(`Updated webhook with id: ${id}`, WebhooksService.name);
       return result;
     } catch (error) {

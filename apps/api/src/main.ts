@@ -2,7 +2,6 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app/app.module";
 import { Logger, ValidationPipe, type LogLevel } from "@nestjs/common";
 import { UsersService } from "./users/users.service";
-import { SettingsService } from "./settings/settings.service";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { COOKIE_NAME } from "./auth/auth.config";
 
@@ -100,12 +99,10 @@ async function bootstrap() {
     }
   }
 
-  await app.get(SettingsService).get();
-
-  await app.listen(PORT, process.env.WEB_HOST ?? "0.0.0.0");
-  Logger.log(`Server running and listening at ${await app.getUrl()}`);
+  await app.listen(PORT, process.env.HOST ?? "0.0.0.0");
+  Logger.log(`Server listening at ${await app.getUrl()}`, "Bootstrap");
 }
 
 bootstrap().catch((error) => {
-  Logger.fatal(`Server failed to start: ${JSON.stringify(error, null, 2)}`);
+  Logger.fatal(`Server failed to start: ${JSON.stringify(error, null, 2)}`, "Bootstrap");
 });

@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { eq } from "drizzle-orm";
-import { settings, type DrizzleDb, type Setting } from "@workspace/lib/db/schema";
+import { settings, type DrizzleDb, type Settings } from "@workspace/lib/db/schema";
 import type { UpdateSettingsDto } from "@workspace/lib/dto";
 
 @Injectable()
@@ -9,7 +9,7 @@ export class SettingsService {
 
   public constructor(@Inject("DrizzleDB") private readonly db: DrizzleDb) {}
 
-  public async get(): Promise<Setting> {
+  public async get(): Promise<Settings> {
     try {
       Logger.verbose("Retrieving settings", SettingsService.name);
       const [existing] = await this.db
@@ -34,7 +34,7 @@ export class SettingsService {
     }
   }
 
-  public async update(dto: UpdateSettingsDto): Promise<Setting> {
+  public async update(dto: UpdateSettingsDto): Promise<Settings> {
     try {
       Logger.verbose("Updating settings", SettingsService.name);
       await this.get();

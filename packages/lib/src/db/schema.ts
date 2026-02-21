@@ -6,7 +6,7 @@ export type Webhook = InferInsertModel<typeof webhooks>;
 export type User = InferInsertModel<typeof users>;
 export type UserWithoutPassword = Omit<User, "password">;
 export type Session = InferInsertModel<typeof sessions>;
-export type Setting = InferInsertModel<typeof settings>;
+export type Settings = InferInsertModel<typeof settings>;
 export type DrizzleDb = NodePgDatabase<typeof schema>;
 
 /**

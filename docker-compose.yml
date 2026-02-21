@@ -36,7 +36,7 @@ services:
       DB_LOGGING: false
       LOG_LEVEL: verbose
       PORT: 3030
-      WEB_HOST: 0.0.0.0
+      HOST: 0.0.0.0
       ALLOWED_ORIGINS: web,webhooksmith.angelin.foo
       COOKIE_DOMAIN: .angelin.foo
       SESSION_TTL: 604800000

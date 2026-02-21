@@ -1,4 +1,11 @@
-import { BadRequestException, ConflictException, Inject, Injectable, Logger, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from "@nestjs/common";
 import { randomBase58 } from "@workspace/lib/common";
 import { type User, users, type DrizzleDb } from "@workspace/lib/db/schema";
 import type { CreateUserDto, UpdateUserDto } from "@workspace/lib/dto";
@@ -95,7 +102,7 @@ export class UsersService {
         .where(eq(users.id, id))
         .returning();
       if (!user) {
-        throw new NotFoundException();
+        throw new InternalServerErrorException("Failed to update user.");
       }
       Logger.log(`Updated user with id: ${id}`, UsersService.name);
       return user;

@@ -10,13 +10,16 @@ export class AuthService {
     private readonly sessionsService: SessionsService,
   ) {}
 
-  public async hasValidSession(sessionId: string): Promise<boolean> {
+  public async hasValidSession(sessionId: string): Promise<{ userId: string; isValid: boolean } | false> {
     try {
       const session = await this.sessionsService.findById(sessionId);
       if (!session?.expiresAt) {
         return false;
       }
-      return new Date(session.expiresAt).getTime() > Date.now();
+      return {
+        userId: session.userId,
+        isValid: new Date(session.expiresAt).getTime() > Date.now(),
+      };
     } catch (error) {
       Logger.error(`Failed to validate session with id: ${sessionId}`, AuthService.name);
       throw error;

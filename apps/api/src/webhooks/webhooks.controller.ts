@@ -12,6 +12,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   UseGuards,
 } from "@nestjs/common";
 import { Webhook } from "@workspace/lib/db/schema";
@@ -24,7 +25,7 @@ import {
 import { WsGateway } from "@/ws/ws.gateway";
 import { WebhooksService } from "./webhooks.service";
 import { AuthGuard } from "@/auth/auth.guard";
-import { WebhookExistsGuard } from "./webhook-exists.guard";
+import { RequestWithWebhook, WebhookExistsGuard } from "./webhook-exists.guard";
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -67,10 +68,11 @@ export class WebhooksController {
   @ApiOkResponse({ description: "Payload forwarded to receiver." })
   @ApiNotFoundResponse({ description: "Webhook was not found." })
   @ApiBadRequestResponse({ description: "Webhook is disabled." })
+  @UseGuards(WebhookExistsGuard)
   @HttpCode(HttpStatus.OK)
   @Post("/:id/send")
-  public async receiveAndSend(@Param("id") id: string, @Body() body: object): Promise<Response> {
-    const { blueprint, receiver, enabled } = await this.webhooksService.findById(id);
+  public async receiveAndSend(@Req() { webhook }: RequestWithWebhook, @Body() body: object): Promise<Response> {
+    const { blueprint, receiver, enabled } = webhook;
     if (!enabled) {
       throw new BadRequestException("Webhook is disabled.");
     }
@@ -91,8 +93,8 @@ export class WebhooksController {
   @UseGuards(AuthGuard, WebhookExistsGuard)
   @HttpCode(HttpStatus.OK)
   @Get("/:id")
-  public findWebhookById(@Param("id") id: string): Promise<Webhook> {
-    return this.webhooksService.findById(id);
+  public findWebhookById(@Req() { webhook }: RequestWithWebhook): Webhook {
+    return webhook;
   }
 
   @ApiCookieAuth()

@@ -24,6 +24,7 @@ const envSchema = z
     NODE_ENV: z.enum(["development", "test", "production"]),
     LOG_LEVEL: z.enum(["verbose", "debug", "log", "warn", "error"]),
     PORT: z.coerce.number().int().min(1).max(65535).default(3030),
+    HOST: z.string().optional().default("0.0.0.0"),
     ALLOWED_ORIGINS: z.string().trim().min(1),
     COOKIE_DOMAIN: z.string().trim().min(1),
     SESSION_TTL: z.coerce.number().int().positive(),

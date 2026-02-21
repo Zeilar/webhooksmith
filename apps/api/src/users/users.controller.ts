@@ -10,16 +10,11 @@ import {
   Param,
   Patch,
   Req,
-  UnauthorizedException,
   UseGuards,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
-import { AuthGuard } from "@/auth/auth.guard";
-import { SessionsService } from "@/sessions/sessions.service";
-import type { Request } from "express";
-import { COOKIE_NAME } from "@/auth/auth.config";
-import { parse } from "cookie";
-import type { User } from "@workspace/lib/db/schema";
+import { AuthGuard, RequestWithSessionId } from "@/auth/auth.guard";
+import type { UserWithoutPassword } from "@workspace/lib/db/schema";
 import {
   ApiBadRequestResponse,
   ApiCookieAuth,
@@ -32,14 +27,12 @@ import {
   ApiUnauthorizedResponse,
   ApiBody,
 } from "@nestjs/swagger";
+import { UserExistsGuard } from "./user-exists.guard";
 
 @ApiTags("Users")
 @Controller("/v1/users")
 export class UsersController {
-  public constructor(
-    private readonly usersService: UsersService,
-    private readonly sessionsService: SessionsService,
-  ) {}
+  public constructor(private readonly usersService: UsersService) {}
 
   @ApiCookieAuth()
   @ApiOperation({ summary: "Update username and/or password for a user." })
@@ -48,7 +41,7 @@ export class UsersController {
   @ApiNoContentResponse({ description: "User updated." })
   @ApiBadRequestResponse({ description: "No changes were provided." })
   @ApiUnauthorizedResponse({ description: "Session is missing, invalid, or expired." })
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, UserExistsGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Patch("/:id")
   public async update(@Body() dto: UpdateUserDto, @Param("id") id: string): Promise<void> {
@@ -69,20 +62,8 @@ export class UsersController {
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   @Get("/me")
-  public async me(@Req() req: Request): Promise<Omit<User, "password"> | null> {
-    const cookies = Array.isArray(req.headers.cookie) ? req.headers.cookie[0] : req.headers.cookie;
-    if (!cookies) {
-      throw new BadRequestException("Missing cookie.");
-    }
-    const sessionId = parse(cookies)[COOKIE_NAME];
-    if (!sessionId) {
-      throw new BadRequestException("Missing session id in cookie.");
-    }
-    const session = await this.sessionsService.findById(sessionId);
-    if (!session) {
-      throw new UnauthorizedException();
-    }
-    const user = await this.usersService.findById(session.userId);
+  public async me(@Req() { userId }: RequestWithSessionId): Promise<UserWithoutPassword> {
+    const user = await this.usersService.findById(userId);
     if (!user) {
       throw new NotFoundException();
     }
