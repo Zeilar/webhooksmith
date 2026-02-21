@@ -28,7 +28,6 @@ import { AuthGuard } from "@/auth/auth.guard";
 import {
   ApiBadRequestResponse,
   ApiBody,
-  ApiConflictResponse,
   ApiCookieAuth,
   ApiCreatedResponse,
   ApiNoContentResponse,
@@ -54,8 +53,8 @@ export class WebhooksController {
   ) {}
 
   private parsePositiveInt(raw: string | undefined, fallback: number): number {
-    const value = Number.parseInt(raw ?? "", 10);
-    return Number.isFinite(value) && value > 0 ? value : fallback;
+    const value = parseInt(raw ?? "", 10);
+    return isFinite(value) && value > 0 ? value : fallback;
   }
 
   private async assertWebhookExists(id: string): Promise<void> {
@@ -72,7 +71,6 @@ export class WebhooksController {
   @ApiParam({ name: "id", type: String, description: "Webhook ID." })
   @ApiBody({ schema: { type: "object", additionalProperties: true } })
   @ApiOkResponse({ description: "Payload forwarded to receiver." })
-  @ApiConflictResponse({ description: "Webhook is disabled." })
   @ApiNotFoundResponse({ description: "Webhook was not found." })
   @ApiBadRequestResponse({ description: "Webhook is disabled." })
   @HttpCode(HttpStatus.OK)
@@ -104,13 +102,13 @@ export class WebhooksController {
   }
 
   @ApiCookieAuth()
-  @ApiOperation({ summary: "List webhooks with pagination." })
+  @ApiOperation({ summary: "Retrieve webhooks with pagination." })
   @ApiQuery({ name: "page", required: false, type: Number, description: "1-based page number (default 1)." })
   @ApiQuery({
     name: "pageSize",
     required: false,
     type: Number,
-    description: "Page size (default 12, max 50).",
+    description: "Page size (default 12, min 1, max 50).",
   })
   @ApiOkResponse({ description: "Paginated webhook list." })
   @ApiUnauthorizedResponse({ description: "Session is invalid or expired." })
@@ -118,12 +116,12 @@ export class WebhooksController {
   @HttpCode(HttpStatus.OK)
   @Get("/")
   public getAll(
-    @Query("page") pageRaw?: string,
-    @Query("pageSize") pageSizeRaw?: string,
+    @Query("page") pageParam?: string,
+    @Query("pageSize") pageSizeParam?: string,
   ): Promise<PaginatedWebhooksDto> {
-    const page = this.parsePositiveInt(pageRaw, WebhooksController.DEFAULT_PAGE);
+    const page = this.parsePositiveInt(pageParam, WebhooksController.DEFAULT_PAGE);
     const pageSize = Math.min(
-      this.parsePositiveInt(pageSizeRaw, WebhooksController.DEFAULT_PAGE_SIZE),
+      this.parsePositiveInt(pageSizeParam, WebhooksController.DEFAULT_PAGE_SIZE),
       WebhooksController.MAX_PAGE_SIZE,
     );
     return this.webhooksService.getAll(page, pageSize);
