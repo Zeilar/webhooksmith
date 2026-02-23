@@ -69,6 +69,7 @@ const fieldClassName =
   "w-full rounded-lg border border-slate-700/75 bg-slate-900/45 px-3 py-2 text-sm outline-none transition-colors placeholder:text-slate-400 focus:border-fuchsia-400/80 active:border-fuchsia-400/80 disabled:border-slate-800/70 disabled:text-slate-500 read-only:border-slate-800/70 read-only:text-slate-400";
 
 const labelClassName = "mb-1.5 block text-sm font-medium text-slate-200";
+const monacoThemeName = "webhooksmith-slate";
 
 function getErrorText(errors: unknown): string | undefined {
   if (!Array.isArray(errors) || errors.length === 0) {
@@ -166,7 +167,7 @@ export function Input({
   const isPassword = type === "password";
   const inputType = isPassword ? (isPasswordVisible ? "text" : "password") : type;
   const hasActions = canClear || isPassword;
-  const rightPaddingClassName = hasActions ? "pr-20" : "pr-3";
+  const rightPaddingClassName = hasActions ? "pr-10" : "pr-3";
 
   return (
     <div className={className}>
@@ -187,7 +188,7 @@ export function Input({
           {...props}
         />
         {hasActions && (
-          <div className="absolute right-4 top-1/2 flex -translate-y-1/2 items-center gap-1">
+          <div className="absolute right-2 top-1/2 flex -translate-y-1/2 items-center gap-1">
             {canClear && (
               <button
                 type="button"
@@ -318,12 +319,33 @@ export function Editor({
         <MonacoEditor
           value={state.value ?? ""}
           onChange={(value) => handleChange(value ?? "")}
-          onMount={(editor) => {
+          onMount={(editor, monaco) => {
+            monaco.editor.defineTheme(monacoThemeName, {
+              base: "vs-dark",
+              inherit: true,
+              rules: [],
+              colors: {
+                "editor.background": "#020617",
+                "editor.foreground": "#e2e8f0",
+                "editorLineNumber.foreground": "#64748b",
+                "editorLineNumber.activeForeground": "#cbd5e1",
+                "editorCursor.foreground": "#94a3b8",
+                "editor.selectionBackground": "#33415580",
+                "editor.selectionHighlightBackground": "#47556955",
+                "editor.inactiveSelectionBackground": "#33415550",
+                "editorIndentGuide.background1": "#33415575",
+                "editorIndentGuide.activeBackground1": "#64748b99",
+                "editorWhitespace.foreground": "#33415570",
+                editorLineHighlightBackground: "#0f172a80",
+                "editorGutter.background": "#020617",
+              },
+            });
+            monaco.editor.setTheme(monacoThemeName);
             editor.onDidBlurEditorText(() => handleBlur());
           }}
           height={height}
           language={language}
-          theme="vs-dark"
+          theme={monacoThemeName}
           options={{
             minimap: { enabled: false },
             fontSize: 13,

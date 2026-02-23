@@ -2,7 +2,7 @@
 
 import { fetcher, FetcherResult } from "@/api/fetcher";
 import { useForm } from "@/ui";
-import { PageContainer, PageShell, PageTitle } from "@/ui/components";
+import { PageContainer, PageShell, PageTitle, Panel } from "@/ui/components";
 import { PER_PAGE_MAX, PER_PAGE_MIN } from "@workspace/lib/dto/settings/constants";
 import type { UpdateSettingsDto, UpdateUserDto } from "@workspace/lib/dto";
 import { Monitor, Save, Settings as SettingsIcon, Shield, User } from "lucide-react";
@@ -71,23 +71,29 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
         <PageTitle icon={<SettingsIcon className="h-5 w-5" />} title="Settings" className="mb-6" />
         <form.AppForm>
           <form.Form className="space-y-5">
-            <section className="rounded-2xl border border-slate-700/75 bg-slate-950/25 p-6">
-              <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold">
-                <User className="h-4 w-4 text-fuchsia-400" />
-                Account
-              </h2>
+            <Panel
+              title={
+                <span className="flex items-center gap-2">
+                  <User className="h-4 w-4 text-fuchsia-400" />
+                  Account
+                </span>
+              }
+            >
               <div className="max-w-sm space-y-4">
                 <form.AppField name="userId">{(field) => <field.Input label="Id" readOnly disabled />}</form.AppField>
                 <form.AppField name="username">
                   {(field) => <field.Input label="Username" placeholder={currentUsername} />}
                 </form.AppField>
               </div>
-            </section>
-            <section className="rounded-2xl border border-slate-700/75 bg-slate-950/25 p-6">
-              <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold">
-                <Shield className="h-4 w-4 text-fuchsia-400" />
-                Security
-              </h2>
+            </Panel>
+            <Panel
+              title={
+                <span className="flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-fuchsia-400" />
+                  Security
+                </span>
+              }
+            >
               <div className="flex flex-col gap-4 max-w-sm">
                 <form.AppField name="password">
                   {(field) => {
@@ -119,12 +125,15 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
                   {(field) => <field.Input label="Confirm password" type="password" placeholder="Optional" />}
                 </form.AppField>
               </div>
-            </section>
-            <section className="rounded-2xl border border-slate-700/75 bg-slate-950/25 p-6">
-              <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold">
-                <Monitor className="h-4 w-4 text-fuchsia-400" />
-                Display
-              </h2>
+            </Panel>
+            <Panel
+              title={
+                <span className="flex items-center gap-2">
+                  <Monitor className="h-4 w-4 text-fuchsia-400" />
+                  Display
+                </span>
+              }
+            >
               <div className="w-full md:w-1/2">
                 <form.AppField
                   name="perPage"
@@ -148,7 +157,7 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
                   )}
                 </form.AppField>
               </div>
-            </section>
+            </Panel>
             <div className="mt-6 flex items-center gap-3">
               <form.SubmitButton icon={<Save className="w-4 h-4" />}>Save changes</form.SubmitButton>
               <form.ResetButton />
