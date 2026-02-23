@@ -87,7 +87,7 @@ export function WebhooksPage({ webhooks, page, total, totalPages }: WebhooksPage
             </Link>
           }
         />
-        <div className="mt-8">{content}</div>
+        {content}
         <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-slate-300/85">
             Page {page} of {totalPages} ({total} total)

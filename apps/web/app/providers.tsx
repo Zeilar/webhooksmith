@@ -19,7 +19,7 @@ export function Providers({ user, children, socketUrl, apiUrl }: ProvidersProps)
   });
 
   return (
-    <ProgressProvider height="4px" color="#9b6bff" options={{ showSpinner: false }} shallowRouting>
+    <ProgressProvider height="4px" color="var(--color-fuchsia-400)" options={{ showSpinner: false }} shallowRouting>
       <QueryClientProvider client={queryClient}>
         <ApiUrlProvider apiUrl={apiUrl}>
           <UserProvider user={user}>

@@ -14,7 +14,7 @@ export function PageShell({ children, className }: PageShellProps) {
   return (
     <main
       className={classNames(
-        "min-h-screen w-full bg-transparent px-4 pb-24 pt-6 text-slate-100 sm:px-6 lg:px-10 lg:pb-6 lg:pt-10 xl:px-16",
+        "h-full w-full bg-transparent px-4 text-slate-100 sm:px-6 lg:px-10 lg:py-6 xl:px-16",
         className,
       )}
     >

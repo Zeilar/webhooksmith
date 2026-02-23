@@ -21,9 +21,7 @@ export function Switch({ checked, disabled, id, className, onCheckedChange, onBl
       onClick={() => onCheckedChange?.(!checked)}
       className={classNames(
         "relative inline-flex h-6 w-11 items-center rounded-full border transition-colors",
-        checked
-          ? "border-fuchsia-400/65 bg-fuchsia-400/30"
-          : "border-slate-700/75 bg-slate-900/65 hover:border-slate-500",
+        checked ? "border-fuchsia-400 bg-fuchsia-400/50" : "border-slate-700/75 bg-slate-900/65 hover:border-slate-500",
         "disabled:cursor-not-allowed disabled:opacity-50",
         className,
       )}

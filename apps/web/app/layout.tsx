@@ -2,7 +2,8 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import type { PropsWithChildren } from "react";
-import { Sidebar } from "./sidebar";
+import { Navbar } from "./navbar";
+import { Footer } from "./footer";
 import { Providers } from "./providers";
 import { SignIn } from "./sign-in";
 import { getUser } from "@/api/server/user";
@@ -31,12 +32,11 @@ export default async function RootLayout({ children }: PropsWithChildren) {
   return (
     <html className={classNames("dark", inter.variable, "antialiased")} lang="en">
       <body>
-        <div className="flex">
-          <Providers user={user} socketUrl={process.env.SOCKET_URL} apiUrl={process.env.API_URL}>
-            {user && <Sidebar logoutUrl={`${process.env.API_URL}/v1/auth/logout`} />}
-            {user ? children : <SignIn />}
-          </Providers>
-        </div>
+        <Providers user={user} socketUrl={process.env.SOCKET_URL} apiUrl={process.env.API_URL}>
+          {user && <Navbar logoutUrl={`${process.env.API_URL}/v1/auth/logout`} />}
+          {user ? children : <SignIn />}
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
