@@ -1,6 +1,5 @@
 import { UpdateUserDto } from "@workspace/lib/dto";
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
@@ -39,17 +38,12 @@ export class UsersController {
   @ApiParam({ name: "id", type: String, description: "User ID." })
   @ApiBody({ type: UpdateUserDto })
   @ApiNoContentResponse({ description: "User updated." })
-  @ApiBadRequestResponse({ description: "No changes were provided." })
+  @ApiBadRequestResponse({ description: "Validation failed." })
   @ApiUnauthorizedResponse({ description: "Session is missing, invalid, or expired." })
   @UseGuards(AuthGuard, UserExistsGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Patch("/:id")
   public async update(@Body() dto: UpdateUserDto, @Param("id") id: string): Promise<void> {
-    const username = dto.username?.trim();
-    const password = dto.password?.trim();
-    if (!username && !password) {
-      throw new BadRequestException("No changes provided.");
-    }
     await this.usersService.update(id, dto);
   }
 

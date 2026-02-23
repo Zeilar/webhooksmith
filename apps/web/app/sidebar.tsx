@@ -62,9 +62,7 @@ export function Sidebar({ logoutUrl }: SidebarProps) {
                     href={url}
                     className={classNames([
                       "flex items-center gap-3.5 rounded-lg px-3.5 py-2.5 text-base transition-colors",
-                      isActive
-                        ? "bg-fuchsia-400/50 text-fuchsia-100"
-                        : "text-slate-300 hover:bg-slate-700/25 hover:text-slate-100",
+                      isActive ? "bg-fuchsia-400/50" : "text-slate-300 hover:bg-slate-700/25 hover:text-slate-100",
                     ])}
                   >
                     {icon}

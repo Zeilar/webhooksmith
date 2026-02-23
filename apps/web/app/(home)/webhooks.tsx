@@ -10,12 +10,11 @@ import { WebhookEnabledSwitch } from "./webhook-enabled-switch";
 interface WebhooksPageProps {
   webhooks: Webhook[];
   page: number;
-  pageSize: number;
   total: number;
   totalPages: number;
 }
 
-export function WebhooksPage({ webhooks, page, pageSize, total, totalPages }: WebhooksPageProps) {
+export function WebhooksPage({ webhooks, page, total, totalPages }: WebhooksPageProps) {
   let content: ReactNode = null;
 
   if (webhooks.length === 0 && total === 0) {
@@ -26,7 +25,7 @@ export function WebhooksPage({ webhooks, page, pageSize, total, totalPages }: We
           <p className="mt-2 text-sm text-slate-300/85">
             Create your first webhook to start forging webhook blueprints
           </p>
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-4 flex flex-col gap-4 sm:flex-row">
             <Link href="/webhooks/new" className={buttonVariants()}>
               <Plus className="h-4 w-4" />
               New webhook
@@ -79,7 +78,7 @@ export function WebhooksPage({ webhooks, page, pageSize, total, totalPages }: We
     <PageShell>
       <PageContainer>
         <PageTitle
-          icon={<WebhookIcon className="h-5 w-5 text-fuchsia-100" />}
+          icon={<WebhookIcon className="h-5 w-5" />}
           title="Webhooks"
           action={
             <Link href="/webhooks/new" className={buttonVariants()}>
@@ -89,13 +88,13 @@ export function WebhooksPage({ webhooks, page, pageSize, total, totalPages }: We
           }
         />
         <div className="mt-8">{content}</div>
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-slate-300/85">
             Page {page} of {totalPages} ({total} total)
           </p>
           <div className="flex items-center gap-3">
             {page > 1 ? (
-              <Link href={`/?page=${page - 1}&pageSize=${pageSize}`} className={buttonVariants({ variant: "outline" })}>
+              <Link href={`/?page=${page - 1}`} className={buttonVariants({ variant: "outline" })}>
                 <ChevronLeft className="h-4 w-4" />
                 Previous
               </Link>
@@ -111,7 +110,7 @@ export function WebhooksPage({ webhooks, page, pageSize, total, totalPages }: We
               </span>
             )}
             {page < totalPages ? (
-              <Link href={`/?page=${page + 1}&pageSize=${pageSize}`} className={buttonVariants({ variant: "outline" })}>
+              <Link href={`/?page=${page + 1}`} className={buttonVariants({ variant: "outline" })}>
                 Next
                 <ChevronRight className="h-4 w-4" />
               </Link>

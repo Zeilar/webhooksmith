@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Switch } from "@/ui/components";
-import { fetcher } from "@/api/fetcher";
+import { useFetcher } from "@/api/fetchers/client";
 
 interface WebhookEnabledSwitchProps {
   webhookId: string;
@@ -11,6 +11,7 @@ interface WebhookEnabledSwitchProps {
 }
 
 export function WebhookEnabledSwitch({ webhookId, initialEnabled }: WebhookEnabledSwitchProps) {
+  const fetcher = useFetcher();
   const queryClient = useQueryClient();
   const queryKey = ["webhook-enabled", webhookId] as const;
   const { data: enabled = initialEnabled, isLoading } = useQuery({
@@ -30,7 +31,7 @@ export function WebhookEnabledSwitch({ webhookId, initialEnabled }: WebhookEnabl
     mutationKey: ["webhook-enabled", webhookId],
     mutationFn: async (nextEnabled: boolean) => {
       const { ok } = await fetcher(`/v1/webhooks/${webhookId}`, {
-        method: "PUT",
+        method: "PATCH",
         body: JSON.stringify({ enabled: nextEnabled }),
       });
       if (!ok) {

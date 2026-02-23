@@ -39,12 +39,12 @@ describe("WebhooksController", () => {
   });
 
   it("parses pagination params and enforces page size max", async () => {
-    webhooksService.getAll.mockResolvedValue({ items: [], page: 1, pageSize: 50, total: 0, totalPages: 1 });
+    webhooksService.getAll.mockResolvedValue({ items: [], page: 1, perPage: 50, total: 0, totalPages: 1 });
 
     await expect(controller.getAll("-1", "999")).resolves.toEqual({
       items: [],
       page: 1,
-      pageSize: 50,
+      perPage: 50,
       total: 0,
       totalPages: 1,
     });
@@ -74,7 +74,10 @@ describe("WebhooksController", () => {
       ok: false,
       status: 502,
       headers: { get: () => "application/json" },
-      json: async () => ({ message: "upstream error" }),
+      json: async () =>
+        new Promise((resolve) => {
+          resolve({ message: "upstream error" });
+        }),
     });
 
     await expect(
@@ -87,7 +90,13 @@ describe("WebhooksController", () => {
     webhooksService.create.mockResolvedValue(created as any);
 
     await expect(
-      controller.create({ name: "n", blueprint: "{}", receiver: "https://example.com", description: "d" }),
+      controller.create({
+        name: "n",
+        blueprint: "{}",
+        receiver: "https://example.com",
+        description: "d",
+        enabled: true,
+      }),
     ).resolves.toBe(created as any);
   });
 

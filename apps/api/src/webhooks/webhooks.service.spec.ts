@@ -19,7 +19,7 @@ describe("WebhooksService", () => {
   const seedWebhook = async () => {
     await testDb.db
       .insert(webhooks)
-      .values({ id: WEBHOOK_ID, name: WEBHOOK_NAME, blueprint: BLUEPRINT, receiver: RECEIVER_URL });
+      .values({ id: WEBHOOK_ID, name: WEBHOOK_NAME, blueprint: BLUEPRINT, receiver: RECEIVER_URL, enabled: true });
   };
 
   beforeAll(async () => {
@@ -52,6 +52,7 @@ describe("WebhooksService", () => {
       blueprint: BLUEPRINT,
       receiver: RECEIVER_URL,
       description: DESCRIPTION,
+      enabled: true,
     });
 
     expect(created).toMatchObject({
@@ -71,6 +72,7 @@ describe("WebhooksService", () => {
         receiver: "https://one.example",
         createdAt: "2026-01-01T00:00:00.000Z",
         updatedAt: "2026-01-01T00:00:00.000Z",
+        enabled: true,
       },
       {
         id: "w2",
@@ -79,6 +81,7 @@ describe("WebhooksService", () => {
         receiver: "https://two.example",
         createdAt: "2026-01-02T00:00:00.000Z",
         updatedAt: "2026-01-02T00:00:00.000Z",
+        enabled: true,
       },
       {
         id: "w3",
@@ -87,13 +90,14 @@ describe("WebhooksService", () => {
         receiver: "https://three.example",
         createdAt: "2026-01-03T00:00:00.000Z",
         updatedAt: "2026-01-03T00:00:00.000Z",
+        enabled: true,
       },
     ]);
 
     await expect(service.getAll(9, 2)).resolves.toEqual({
       items: [expect.objectContaining({ id: "w1" })],
       page: 2,
-      pageSize: 2,
+      perPage: 2,
       total: 3,
       totalPages: 2,
     });

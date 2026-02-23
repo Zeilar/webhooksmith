@@ -15,9 +15,9 @@ import {
 } from "@nestjs/swagger";
 import { SettingsExist } from "./settings-exist.guard";
 
-@UseGuards(AuthGuard, SettingsExist)
 @ApiTags("Settings")
 @ApiCookieAuth()
+@UseGuards(AuthGuard, SettingsExist)
 @Controller("/v1/settings")
 export class SettingsController {
   public constructor(private readonly settingsService: SettingsService) {}

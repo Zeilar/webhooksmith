@@ -1,6 +1,6 @@
 "use client";
 
-import { fetcher } from "@/api/fetcher";
+import { useFetcher } from "@/api/fetchers/client";
 import { useRouter } from "next/navigation";
 import { useForm } from "@/ui";
 import { PageContainer, PageShell } from "@/ui/components";
@@ -9,6 +9,7 @@ import { toast } from "sonner";
 
 export function SignIn() {
   const { refresh } = useRouter();
+  const fetcher = useFetcher();
   const form = useForm({
     defaultValues: { username: "", password: "" } satisfies SignInDto,
     onSubmit: async ({ value, formApi }) => {

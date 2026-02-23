@@ -1,37 +1,32 @@
-import { fetcher } from "@/api/fetcher";
+import { serverFetcher } from "@/api/fetchers/server";
 import { WebhooksPage } from "./webhooks";
 import type { PaginatedWebhooksDto } from "@workspace/lib/dto";
-import type { Setting } from "@workspace/lib/db/schema";
-import { cookies } from "next/headers";
+import type { Settings } from "@workspace/lib/db/schema";
 
-interface WebhooksHomePageProps {
-  searchParams: Promise<{
-    page?: string;
-    pageSize?: string;
-  }>;
-}
-
-export default async function Page({ searchParams }: WebhooksHomePageProps) {
+export default async function Page({ searchParams }: PageProps<"/">) {
   const params = await searchParams;
-  const cookieHeader = { cookie: `${await cookies()}` };
-  const { data: settings } = await fetcher<Setting>("/v1/settings", { headers: cookieHeader });
-  const defaultPageSize = settings?.perPage && settings.perPage > 0 ? settings.perPage : 12;
-  const parsedPage = Number.parseInt(params.page ?? "", 10);
-  const parsedPageSize = Number.parseInt(params.pageSize ?? "", 10);
-  const page = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1;
-  const pageSize = Number.isFinite(parsedPageSize) && parsedPageSize > 0 ? parsedPageSize : defaultPageSize;
-  const query = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
-  const { data } = await fetcher<PaginatedWebhooksDto>(`/v1/webhooks?${query.toString()}`, {
-    headers: cookieHeader,
+  const pageParam = Array.isArray(params.page) ? params.page.at(0) : params.page;
+
+  const settingsQuery = await serverFetcher<Settings>("/v1/settings");
+  if (!settingsQuery.ok || !settingsQuery.data) {
+    throw new Error("Settings not found.", { cause: settingsQuery });
+  }
+
+  const webhooksQueryParams = new URLSearchParams({
+    page: `${pageParam ?? 1}`,
+    perPage: `${settingsQuery.data.perPage}`,
   });
+  const webhooksQuery = await serverFetcher<PaginatedWebhooksDto>(`/v1/webhooks?${webhooksQueryParams}`);
+  if (!webhooksQuery.ok || !webhooksQuery.data) {
+    throw new Error("Failed to retrieve webhooks.", { cause: webhooksQuery });
+  }
 
   return (
     <WebhooksPage
-      webhooks={data?.items ?? []}
-      page={data?.page ?? page}
-      pageSize={data?.pageSize ?? pageSize}
-      total={data?.total ?? 0}
-      totalPages={data?.totalPages ?? 1}
+      webhooks={webhooksQuery.data.items}
+      page={webhooksQuery.data.page}
+      total={webhooksQuery.data.total}
+      totalPages={webhooksQuery.data.totalPages}
     />
   );
 }

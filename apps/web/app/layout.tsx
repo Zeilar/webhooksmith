@@ -7,6 +7,7 @@ import { Providers } from "./providers";
 import { SignIn } from "./sign-in";
 import { getUser } from "@/api/server/user";
 import classNames from "classnames";
+import { getDbHealth } from "@/api/server/db";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -21,13 +22,17 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: PropsWithChildren) {
+  const isDbOk = await getDbHealth();
+  if (!isDbOk) {
+    throw new Error("Database is unavailable.");
+  }
   const user = await getUser();
 
   return (
     <html className={classNames("dark", inter.variable, "antialiased")} lang="en">
       <body>
         <div className="flex">
-          <Providers user={user} socketUrl={process.env.SOCKET_URL}>
+          <Providers user={user} socketUrl={process.env.SOCKET_URL} apiUrl={process.env.API_URL}>
             {user && <Sidebar logoutUrl={`${process.env.API_URL}/v1/auth/logout`} />}
             {user ? children : <SignIn />}
           </Providers>

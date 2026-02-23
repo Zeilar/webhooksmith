@@ -11,7 +11,7 @@ interface PageTitleProps {
 
 export function PageTitle({ icon, title, subtitle, action, className }: PageTitleProps) {
   return (
-    <div className={classNames("mb-8 flex items-center justify-between gap-4", className)}>
+    <div className={classNames("mb-4 flex items-center justify-between gap-4", className)}>
       <div className="flex items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-fuchsia-400/45 bg-fuchsia-400/20">
           {icon}

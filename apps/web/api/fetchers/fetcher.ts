@@ -5,13 +5,15 @@ export interface FetcherResult<T = unknown> {
   statusText?: string;
 }
 
+export type FetcherFn = <T = unknown>(uri: `/${string}`, options?: RequestInit) => Promise<FetcherResult<T>>;
+
 export async function fetcher<T = unknown>(
+  apiUrl: string,
   uri: `/${string}`,
   { headers, ...options }: RequestInit = {},
 ): Promise<FetcherResult<T>> {
   try {
-    const API_URL = "https://api-webhooksmith.angelin.foo";
-    const res = await fetch(`${API_URL}${uri}`, {
+    const res = await fetch(`${apiUrl}${uri}`, {
       headers: { "Content-Type": "application/json", ...headers },
       credentials: "include",
       ...options,

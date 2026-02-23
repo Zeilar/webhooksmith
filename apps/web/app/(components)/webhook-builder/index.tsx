@@ -25,7 +25,7 @@ import { useSocket } from "@/ui";
 import { useForm, useDisclosure } from "@/ui/hooks";
 import type { CreateWebhookDto, TestWebhookBlueprintDto } from "@workspace/lib/dto";
 import { isJSON, isURL } from "class-validator";
-import { fetcher } from "@/api/fetcher";
+import { useFetcher } from "@/api/fetchers/client";
 import { createOnSubmit, updateOnSubmit } from "./submitters";
 
 interface WebhookBuilderProps {
@@ -49,6 +49,7 @@ export function WebhookBuilder({
   interceptId,
   createMode,
 }: WebhookBuilderProps) {
+  const fetcher = useFetcher();
   const params = useParams<{ id: string | undefined }>();
   const { push, refresh } = useRouter();
   const id = params.id;
@@ -70,13 +71,13 @@ export function WebhookBuilder({
         enabled: value.enabled,
       };
       if (createMode) {
-        return createOnSubmit(dto, (id) => push(`/webhooks/${id}`));
+        return createOnSubmit(fetcher, dto, (id) => push(`/webhooks/${id}`));
       }
       if (!id) {
         toast.error("An unexpected error occurred");
         return;
       }
-      return updateOnSubmit(id, dto, refresh);
+      return updateOnSubmit(fetcher, id, dto, refresh);
     },
   });
   const socket = useSocket();
@@ -187,14 +188,14 @@ export function WebhookBuilder({
         <PageShell>
           <PageContainer>
             <PageTitle
-              icon={<WebhookIcon className="h-5 w-5 text-fuchsia-100" />}
+              icon={<WebhookIcon className="h-5 w-5" />}
               title={
                 <>
                   Webhook / <span className="text-slate-400">{id ?? "new"}</span>
                 </>
               }
             />
-            <div className="grid grid-cols-1 gap-6">
+            <div className="grid grid-cols-1 gap-4">
               <Panel
                 title={
                   <span className="flex items-center gap-2">
@@ -254,7 +255,7 @@ export function WebhookBuilder({
                   </span>
                 </div>
               </Panel>
-              <section className="grid grid-cols-1 gap-6 2xl:grid-cols-2">
+              <section className="grid grid-cols-1 gap-4 2xl:grid-cols-2">
                 <Panel
                   title={
                     <span className="flex items-center gap-2">
@@ -288,7 +289,7 @@ export function WebhookBuilder({
                 </form.AppField>
               </section>
             </div>
-            <div className="mt-6 flex flex-wrap items-center gap-3">
+            <div className="mt-4 flex flex-wrap items-center gap-3">
               <form.SubmitButton
                 className="h-full"
                 icon={createMode ? <Rocket className="h-4 w-4" /> : <Save className="h-4 w-4" />}

@@ -1,9 +1,13 @@
 import { toast } from "sonner";
 import type { CreateWebhookDto, UpdateWebhookDto } from "@workspace/lib/dto";
-import { fetcher } from "@/api/fetcher";
+import type { FetcherFn } from "@/api/fetchers/fetcher";
 import type { Webhook } from "@workspace/lib/db/schema";
 
-export async function createOnSubmit(dto: CreateWebhookDto, onSuccess: (id: string) => void): Promise<void> {
+export async function createOnSubmit(
+  fetcher: FetcherFn,
+  dto: CreateWebhookDto,
+  onSuccess: (id: string) => void,
+): Promise<void> {
   const { data, ok } = await fetcher<Webhook>("/v1/webhooks", {
     method: "POST",
     body: JSON.stringify(dto),
@@ -20,13 +24,14 @@ export async function createOnSubmit(dto: CreateWebhookDto, onSuccess: (id: stri
   onSuccess(data.id);
 }
 
-export async function updateOnSubmit(id: string, dto: UpdateWebhookDto, onSuccess?: VoidFunction): Promise<void> {
-  if (!id) {
-    toast.error("An unexpected error occurred");
-    return;
-  }
+export async function updateOnSubmit(
+  fetcher: FetcherFn,
+  id: string,
+  dto: UpdateWebhookDto,
+  onSuccess?: VoidFunction,
+): Promise<void> {
   const { ok } = await fetcher(`/v1/webhooks/${id}`, {
-    method: "PUT",
+    method: "PATCH",
     body: JSON.stringify(dto),
   });
   if (!ok) {

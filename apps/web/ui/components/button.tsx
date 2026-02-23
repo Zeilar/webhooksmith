@@ -11,7 +11,7 @@ export const buttonVariants = cva(
         secondary: "border border-slate-500/70 bg-slate-800/65 hover:bg-slate-700/75",
         outline: "border border-slate-700/75 bg-slate-900/30 hover:bg-slate-800/35",
         ghost: "text-slate-200 hover:bg-slate-800/65",
-        danger: "bg-red-600/50 hover:bg-red-600/35",
+        danger: "bg-red-600/50 hover:bg-red-600/60",
       },
       size: {
         default: "h-9 px-4 py-2",

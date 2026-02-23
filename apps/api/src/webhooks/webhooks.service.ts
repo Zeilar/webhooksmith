@@ -19,24 +19,24 @@ export class WebhooksService {
     return webhook;
   }
 
-  public async getAll(page: number, pageSize: number): Promise<PaginatedWebhooksDto> {
+  public async getAll(page: number, perPage: number): Promise<PaginatedWebhooksDto> {
     try {
-      Logger.verbose(`Retrieving webhooks page ${page} with page size ${pageSize}`, WebhooksService.name);
+      Logger.verbose(`Retrieving webhooks page ${page} with page size ${perPage}`, WebhooksService.name);
       const total = await this.db.$count(webhooks);
-      const totalPages = Math.max(1, Math.ceil(total / pageSize));
+      const totalPages = Math.max(1, Math.ceil(total / perPage));
       const safePage = Math.min(page, totalPages);
-      const offset = (safePage - 1) * pageSize;
+      const offset = (safePage - 1) * perPage;
       const items = await this.db
         .select()
         .from(webhooks)
         .orderBy(desc(webhooks.createdAt))
-        .limit(pageSize)
+        .limit(perPage)
         .offset(offset);
       Logger.verbose(
         `Found ${items.length} webhooks for page ${safePage}/${totalPages} out of ${total} webhooks`,
         WebhooksService.name,
       );
-      return { items, page: safePage, pageSize, total, totalPages };
+      return { items, page: safePage, perPage, total, totalPages };
     } catch (error) {
       Logger.error("Failed to retrieve paginated webhooks", WebhooksService.name);
       throw error;

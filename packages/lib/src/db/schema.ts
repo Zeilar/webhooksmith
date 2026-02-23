@@ -6,7 +6,7 @@ export type Webhook = InferInsertModel<typeof webhooks>;
 export type User = InferInsertModel<typeof users>;
 export type UserWithoutPassword = Omit<User, "password">;
 export type Session = InferInsertModel<typeof sessions>;
-export type Settings = InferInsertModel<typeof settings>;
+export type Settings = Required<InferInsertModel<typeof settings>>;
 export type DrizzleDb = NodePgDatabase<typeof schema>;
 
 /**
@@ -35,7 +35,7 @@ export const webhooks = pgTable("webhooks", {
   /**
    * Whether this webhook is allowed to receive and forward payloads.
    */
-  enabled: boolean("enabled").notNull().default(true),
+  enabled: boolean("enabled").notNull(),
   createdAt,
   updatedAt,
 });
@@ -69,7 +69,7 @@ export const sessions = pgTable("sessions", {
 
 export const settings = pgTable("settings", {
   id,
-  perPage: integer("per_page").notNull().default(12),
+  perPage: integer("per_page").notNull(),
   createdAt,
   updatedAt,
 });

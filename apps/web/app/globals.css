@@ -11,7 +11,7 @@
 }
 
 ::selection {
-  background-color: var(--accent);
+  background-color: var(--accent-strong);
   color: var(--color-foreground);
 }
 

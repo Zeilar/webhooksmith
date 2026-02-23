@@ -8,7 +8,7 @@ export interface RequestWithSettings extends Request {
 }
 
 /**
- * Only checks whether user exists based on id parameter, doesn't care about authentication.
+ * Only checks whether settings exist, doesn't care about authentication.
  */
 @Injectable()
 export class SettingsExist implements CanActivate {
@@ -16,11 +16,6 @@ export class SettingsExist implements CanActivate {
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest<RequestWithSettings>();
-
-    const userId = req.params?.id;
-    if (!userId) {
-      throw new NotFoundException();
-    }
 
     const settings = await this.settingsService.get();
     if (!settings) {

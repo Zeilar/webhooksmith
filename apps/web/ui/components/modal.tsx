@@ -21,7 +21,7 @@ export function Modal({ open, onClose, title, description, children, footer }: M
           <DialogTitle className="text-lg font-semibold">{title}</DialogTitle>
           {description && <p className="mt-2 text-sm">{description}</p>}
           {children && <div className="mt-4">{children}</div>}
-          {footer && <div className="mt-6 flex items-center justify-end gap-3">{footer}</div>}
+          {footer && <div className="mt-4 flex items-center justify-end gap-2">{footer}</div>}
         </DialogPanel>
       </div>
     </Dialog>

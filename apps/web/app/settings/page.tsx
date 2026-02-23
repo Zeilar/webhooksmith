@@ -1,5 +1,5 @@
-import { fetcher } from "@/api/fetcher";
-import type { Setting } from "@workspace/lib/db/schema";
+import { serverFetcher } from "@/api/fetchers/server";
+import type { Settings as ISettings } from "@workspace/lib/db/schema";
 import { getUser } from "@/api/server/user";
 import { Settings } from "./settings";
 import { cookies } from "next/headers";
@@ -12,7 +12,11 @@ export default async function Page() {
     forbidden();
   }
 
-  const { data: settings } = await fetcher<Setting>("/v1/settings", { headers: { cookie: `${await cookies()}` } });
+  const settingsQuery = await serverFetcher<ISettings>("/v1/settings", { headers: { cookie: `${await cookies()}` } });
 
-  return <Settings userId={user.id} currentUsername={user.username} currentPerPage={settings?.perPage ?? 12} />;
+  if (!settingsQuery.ok || !settingsQuery.data) {
+    throw new Error("Settings not found.");
+  }
+
+  return <Settings userId={user.id} currentUsername={user.username} currentPerPage={settingsQuery.data.perPage} />;
 }

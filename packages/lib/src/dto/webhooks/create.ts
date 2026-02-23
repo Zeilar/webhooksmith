@@ -23,5 +23,5 @@ export class CreateWebhookDto implements Partial<Webhook> {
   @ApiPropertyOptional({ default: true })
   @IsBoolean()
   @IsOptional()
-  public enabled?: boolean;
+  public enabled: boolean;
 }

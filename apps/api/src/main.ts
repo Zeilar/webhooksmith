@@ -2,6 +2,7 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app/app.module";
 import { Logger, ValidationPipe, type LogLevel } from "@nestjs/common";
 import { UsersService } from "./users/users.service";
+import { SettingsService } from "./settings/settings.service";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { COOKIE_NAME } from "./auth/auth.config";
 
@@ -56,6 +57,9 @@ async function bootstrap() {
     },
   });
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
+
+  // The get method will seed the table if necessary.
+  await app.get(SettingsService).get();
 
   if (isSwaggerEnabled()) {
     const swaggerConfig = new DocumentBuilder()

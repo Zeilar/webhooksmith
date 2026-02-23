@@ -9,8 +9,8 @@ import {
   HttpStatus,
   Logger,
   Param,
+  Patch,
   Post,
-  Put,
   Query,
   Req,
   UseGuards,
@@ -101,7 +101,7 @@ export class WebhooksController {
   @ApiOperation({ summary: "Retrieve webhooks with pagination." })
   @ApiQuery({ name: "page", required: false, type: Number, description: "1-based page number (default 1)." })
   @ApiQuery({
-    name: "pageSize",
+    name: "perPage",
     required: false,
     type: Number,
     description: "Page size (default 12, min 1, max 50).",
@@ -113,14 +113,14 @@ export class WebhooksController {
   @Get("/")
   public getAll(
     @Query("page") pageParam?: string,
-    @Query("pageSize") pageSizeParam?: string,
+    @Query("perPage") perPageParam?: string,
   ): Promise<PaginatedWebhooksDto> {
     const page = this.parsePositiveInt(pageParam, WebhooksController.DEFAULT_PAGE);
-    const pageSize = Math.min(
-      this.parsePositiveInt(pageSizeParam, WebhooksController.DEFAULT_PAGE_SIZE),
+    const perPage = Math.min(
+      this.parsePositiveInt(perPageParam, WebhooksController.DEFAULT_PAGE_SIZE),
       WebhooksController.MAX_PAGE_SIZE,
     );
-    return this.webhooksService.getAll(page, pageSize);
+    return this.webhooksService.getAll(page, perPage);
   }
 
   @ApiCookieAuth()
@@ -182,7 +182,7 @@ export class WebhooksController {
   @ApiNotFoundResponse({ description: "Webhook was not found." })
   @UseGuards(AuthGuard, WebhookExistsGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Put("/:id")
+  @Patch("/:id")
   public async update(@Param("id") id: string, @Body() dto: UpdateWebhookDto): Promise<void> {
     await this.webhooksService.update(id, dto);
   }

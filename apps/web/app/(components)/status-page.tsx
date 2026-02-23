@@ -4,6 +4,7 @@ import type { PropsWithChildren, ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import { ArrowLeft } from "lucide-react";
 import { buttonVariants, PageContainer, PageShell } from "@/ui";
+import classNames from "classnames";
 
 interface StatusPageProps {
   title: string;
@@ -13,6 +14,7 @@ interface StatusPageProps {
   iconClassName: string;
   backHref?: Route;
   backLabel?: string;
+  hideBackButton?: boolean;
   details?: ReactNode;
 }
 
@@ -25,6 +27,7 @@ export function StatusPage({
   backHref = "/",
   backLabel = "Back to webhooks",
   details,
+  hideBackButton,
 }: StatusPageProps) {
   return (
     <PageShell>
@@ -40,12 +43,14 @@ export function StatusPage({
             </div>
           </div>
           {details}
-          <div className="mt-6 flex items-center gap-3">
-            <Link href={backHref} className={`${buttonVariants({ variant: "outline" })} h-10`}>
-              <ArrowLeft className="h-4 w-4" />
-              {backLabel}
-            </Link>
-          </div>
+          {!hideBackButton && (
+            <div className="mt-4 flex items-center gap-3">
+              <Link href={backHref} className={classNames(buttonVariants({ variant: "outline", className: "h-10" }))}>
+                <ArrowLeft className="h-4 w-4" />
+                {backLabel}
+              </Link>
+            </div>
+          )}
         </div>
       </PageContainer>
     </PageShell>
@@ -54,7 +59,7 @@ export function StatusPage({
 
 export function IdBadge({ children }: PropsWithChildren) {
   return (
-    <code className="mx-1 rounded border border-slate-500/70 bg-slate-900/70 px-1.5 py-0.5 font-mono text-xs text-slate-100">
+    <code className="mx-1 rounded border border-slate-700/75 bg-slate-900/70 px-1.5 py-0.5 font-mono text-xs">
       {children}
     </code>
   );
