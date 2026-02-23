@@ -18,7 +18,7 @@ export function Providers({ user, children, socketUrl }: ProvidersProps) {
   });
 
   return (
-    <ProgressProvider height="4px" color="white" options={{ showSpinner: false }} shallowRouting>
+    <ProgressProvider height="4px" color="#9b6bff" options={{ showSpinner: false }} shallowRouting>
       <QueryClientProvider client={queryClient}>
         <UserProvider user={user}>
           <SocketProvider socketUrl={socketUrl}>
@@ -27,15 +27,15 @@ export function Providers({ user, children, socketUrl }: ProvidersProps) {
               toastOptions={{
                 classNames: {
                   toast:
-                    "rounded-xl border-2 border-zinc-700 bg-zinc-900 text-zinc-100 shadow-lg shadow-black/40 backdrop-blur-md select-none",
-                  title: "text-sm font-medium text-zinc-100",
-                  description: "text-xs text-zinc-300",
-                  actionButton: "!bg-zinc-100 !text-zinc-900 hover:!bg-zinc-200",
-                  cancelButton: "!bg-zinc-800 !text-zinc-200 hover:!bg-zinc-700",
-                  success: "!border-emerald-700/70 !bg-emerald-950/40 !text-emerald-100",
-                  error: "!border-rose-700/70 !bg-rose-950/40 !text-rose-100",
-                  warning: "!border-amber-700/70 !bg-amber-950/40 !text-amber-100",
-                  info: "!border-sky-700/70 !bg-sky-950/40 !text-sky-100",
+                    "rounded-xl border border-slate-500/75 bg-slate-900/90 text-slate-100 shadow-lg shadow-slate-950/30 backdrop-blur-md select-none",
+                  title: "text-sm font-medium text-slate-100",
+                  description: "text-xs text-slate-300",
+                  actionButton: "!border !border-fuchsia-400/55 !bg-fuchsia-500 !text-white hover:!bg-fuchsia-400",
+                  cancelButton: "!border !border-slate-500/70 !bg-slate-800 !text-slate-100 hover:!bg-slate-700",
+                  success: "!border-emerald-400/60 !bg-emerald-500/18 !text-emerald-100",
+                  error: "!border-rose-400/60 !bg-rose-500/18 !text-rose-100",
+                  warning: "!border-amber-400/60 !bg-amber-500/18 !text-amber-100",
+                  info: "!border-sky-400/60 !bg-sky-500/18 !text-sky-100",
                 },
               }}
             />

@@ -20,17 +20,17 @@ export function Switch({ checked, disabled, id, className, onCheckedChange, onBl
       onBlur={onBlur}
       onClick={() => onCheckedChange?.(!checked)}
       className={classNames(
-        "relative inline-flex h-6 w-11 items-center rounded-full border-2 transition-colors",
+        "relative inline-flex h-6 w-11 items-center rounded-full border transition-colors",
         checked
-          ? "border-zinc-600 bg-zinc-200/15"
-          : "border-zinc-800 bg-zinc-900/70 hover:border-zinc-700",
+          ? "border-fuchsia-400/65 bg-fuchsia-400/30"
+          : "border-slate-700/75 bg-slate-900/65 hover:border-slate-500",
         "disabled:cursor-not-allowed disabled:opacity-50",
         className,
       )}
     >
       <span
         className={classNames(
-          "inline-block h-4 w-4 transform rounded-full bg-zinc-100 transition-transform",
+          "inline-block h-4 w-4 transform rounded-full bg-slate-100 transition-transform",
           checked ? "translate-x-5" : "translate-x-1",
         )}
       />

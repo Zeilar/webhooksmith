@@ -17,9 +17,11 @@ import { useDisclosure } from "../useDisclosure";
 
 export type FormProps = FormHTMLAttributes<HTMLFormElement>;
 
-export type SubmitButtonProps = ComponentProps<typeof Button> & {
+export interface SubmitButtonProps extends ComponentProps<typeof Button> {
   icon?: ReactNode;
-};
+}
+
+export type ResetButtonProps = ComponentProps<typeof Button>;
 
 export interface BaseFieldProps {
   label?: ReactNode;
@@ -64,9 +66,9 @@ export interface FieldLabelProps extends PropsWithChildren, LabelHTMLAttributes<
 }
 
 const fieldClassName =
-  "w-full rounded-lg border-2 border-zinc-800 px-3 py-2 text-sm text-zinc-100 outline-none transition-colors placeholder:text-zinc-500 focus:border-zinc-500 active:border-zinc-500 disabled:border-zinc-900 disabled:text-zinc-500 read-only:border-zinc-900 read-only:text-zinc-500";
+  "w-full rounded-lg border border-slate-700/75 bg-slate-900/45 px-3 py-2 text-sm outline-none transition-colors placeholder:text-slate-400 focus:border-fuchsia-400/80 active:border-fuchsia-400/80 disabled:border-slate-800/70 disabled:text-slate-500 read-only:border-slate-800/70 read-only:text-slate-400";
 
-const labelClassName = "mb-1.5 block text-sm font-medium text-zinc-200";
+const labelClassName = "mb-1.5 block text-sm font-medium text-slate-200";
 
 function getErrorText(errors: unknown): string | undefined {
   if (!Array.isArray(errors) || errors.length === 0) {
@@ -85,17 +87,13 @@ export function FieldLabel({ children, required, htmlFor, className, ...props }:
   );
 }
 
-type FieldHelperTextProps = {
+interface FieldHelperTextProps {
   error?: string;
   helperText?: ReactNode;
-};
+}
 
 export function FieldHelperText({ error, helperText }: FieldHelperTextProps) {
-  if (!error && !helperText) {
-    return null;
-  }
-
-  return <p className="mt-2 text-xs text-red-400">{error ?? helperText}</p>;
+  return (error || helperText) && <p className="mt-2 text-xs text-red-400">{error ?? helperText}</p>;
 }
 
 export function Form({ children, ...props }: FormProps) {
@@ -124,6 +122,26 @@ export function SubmitButton({ children, icon, ...props }: SubmitButtonProps) {
         <Button type="submit" disabled={isSubmitting || props.disabled} {...props}>
           {isSubmitting ? <LoaderCircle className="h-4 w-4 animate-spin" /> : icon}
           {children ?? "Submit"}
+        </Button>
+      )}
+    </form.Subscribe>
+  );
+}
+
+export function ResetButton({ disabled, ...props }: ResetButtonProps) {
+  const form = useFormContext();
+
+  return (
+    <form.Subscribe selector={(state) => state.isPristine}>
+      {(isPristine) => (
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => form.reset()}
+          disabled={disabled || isPristine}
+          {...props}
+        >
+          Reset
         </Button>
       )}
     </form.Subscribe>
@@ -174,7 +192,7 @@ export function Input({
               <button
                 type="button"
                 onClick={() => handleChange(clearValue)}
-                className="rounded p-1 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
+                className="rounded p-1 text-slate-400 hover:bg-slate-800 hover:text-slate-200"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -183,7 +201,7 @@ export function Input({
               <button
                 type="button"
                 onClick={password.toggle}
-                className="rounded p-1 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
+                className="rounded p-1 text-slate-400 hover:bg-slate-800 hover:text-slate-200"
               >
                 {isPasswordVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
@@ -296,7 +314,7 @@ export function Editor({
   return (
     <div className={className}>
       {label && <FieldLabel required={required}>{label}</FieldLabel>}
-      <div className={`overflow-hidden rounded-xl border-2 border-zinc-800 ${editorClassName ?? ""}`}>
+      <div className={classNames("overflow-hidden rounded-xl border border-slate-700/75", editorClassName)}>
         <MonacoEditor
           value={state.value ?? ""}
           onChange={(value) => handleChange(value ?? "")}

@@ -5,7 +5,11 @@ import {
   Check,
   CircleCheck,
   CircleX,
+  Code,
   Copy,
+  Eye,
+  FileText,
+  Link2,
   LoaderCircle,
   Rocket,
   Save,
@@ -183,15 +187,22 @@ export function WebhookBuilder({
         <PageShell>
           <PageContainer>
             <PageTitle
-              icon={<WebhookIcon className="h-5 w-5 text-zinc-200" />}
+              icon={<WebhookIcon className="h-5 w-5 text-fuchsia-100" />}
               title={
                 <>
-                  Webhook / <span className="text-zinc-500">{id ?? "new"}</span>
+                  Webhook / <span className="text-slate-400">{id ?? "new"}</span>
                 </>
               }
             />
             <div className="grid grid-cols-1 gap-6">
-              <Panel title="Details">
+              <Panel
+                title={
+                  <span className="flex items-center gap-2">
+                    <FileText className="h-4 w-4 text-fuchsia-400" />
+                    Details
+                  </span>
+                }
+              >
                 <div className="space-y-3">
                   <form.AppField name="enabled">{(field) => <field.Switch label="Enabled" />}</form.AppField>
                   <div className="w-full md:w-1/2">
@@ -220,16 +231,22 @@ export function WebhookBuilder({
                   </form.AppField>
                 </div>
               </Panel>
-              <Panel title="Intercept">
+              <Panel
+                title={
+                  <span className="flex items-center gap-2">
+                    <Link2 className="h-4 w-4 text-fuchsia-400" />
+                    Intercept
+                  </span>
+                }
+              >
                 <div className="space-y-2">
-                  <p className="text-sm text-zinc-300">Use this URL in your app to intercept a response</p>
-                  <span className="inline-flex max-w-full items-start gap-1 rounded-md border-2 border-zinc-800 bg-zinc-900 px-2 py-1 text-sm text-zinc-100">
+                  <p className="text-sm text-slate-300">Use this URL in your app to intercept a response</p>
+                  <span className="inline-flex max-w-full items-start gap-1 rounded-md border border-slate-700/75 bg-slate-800/65 px-2 py-1 text-sm">
                     <code className="min-w-0 break-all">{interceptUrl}</code>
                     <button
                       type="button"
                       onClick={copyInterceptUrl}
-                      aria-label="Copy intercept URL"
-                      className="ml-1 mt-0.5 shrink-0 rounded p-0.5 text-zinc-300 transition-colors hover:bg-zinc-900 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-40"
+                      className="ml-1 mt-0.5 shrink-0 rounded p-0.5 transition-colors hover:text-accent disabled:cursor-not-allowed disabled:opacity-40"
                       title={isCopiedVisible ? "Copied" : "Copy"}
                     >
                       {isCopiedVisible ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
@@ -238,7 +255,14 @@ export function WebhookBuilder({
                 </div>
               </Panel>
               <section className="grid grid-cols-1 gap-6 2xl:grid-cols-2">
-                <Panel title="Intercepted response">
+                <Panel
+                  title={
+                    <span className="flex items-center gap-2">
+                      <Eye className="h-4 w-4 text-fuchsia-400" />
+                      Intercepted response
+                    </span>
+                  }
+                >
                   <form.AppField name="intercepted">
                     {(field) => <field.Editor options={{ readOnly: true }} />}
                   </form.AppField>
@@ -252,7 +276,8 @@ export function WebhookBuilder({
                   {(field) => (
                     <Panel
                       title={
-                        <span>
+                        <span className="flex items-center gap-2">
+                          <Code className="h-4 w-4 text-fuchsia-400" />
                           Blueprint <Required />
                         </span>
                       }

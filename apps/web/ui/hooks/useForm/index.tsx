@@ -2,7 +2,7 @@
 
 import { createFormHook } from "@tanstack/react-form";
 
-import { Editor, Form, Input, Select, SubmitButton, Switch, TextArea, FieldLabel } from "./components";
+import { Editor, Form, Input, Select, SubmitButton, Switch, TextArea, FieldLabel, ResetButton } from "./components";
 import { fieldContext, formContext } from "./context";
 
 export const { useAppForm: useForm, withForm } = createFormHook({
@@ -17,6 +17,7 @@ export const { useAppForm: useForm, withForm } = createFormHook({
   formComponents: {
     SubmitButton,
     Form,
+    ResetButton,
   },
   fieldContext,
   formContext,

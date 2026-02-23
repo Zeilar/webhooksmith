@@ -13,10 +13,10 @@ export function Panel({
   headerClassName?: string;
 }) {
   return (
-    <div className="rounded-2xl border-2 border-zinc-800 bg-zinc-900/40">
-      <div className={classNames("border-b-2 border-zinc-800 px-4 py-3 flex items-center", headerClassName)}>
+    <div className="rounded-2xl border border-slate-700/75 bg-slate-950/25 backdrop-blur-sm">
+      <div className={classNames("border-b border-slate-700/75 px-4 py-3 flex items-center", headerClassName)}>
         <div className="flex items-center justify-between gap-3 w-full">
-          <div className="text-sm font-medium text-zinc-100">{title}</div>
+          <h2 className="text-lg font-semibold">{title}</h2>
           {headerAction}
         </div>
       </div>

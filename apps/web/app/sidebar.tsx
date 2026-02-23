@@ -3,9 +3,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { LogOut, Settings, Webhook } from "lucide-react";
 import type { Route } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import type { ReactNode } from "react";
+import webooksmithIcon from "../public/webhooksmith.png";
+import classNames from "classnames";
 
 interface SidebarProps {
   logoutUrl: string;
@@ -36,9 +39,18 @@ export function Sidebar({ logoutUrl }: SidebarProps) {
 
   return (
     <>
-      <aside className="sticky top-0 hidden h-screen w-65 shrink-0 flex-col border-r-2 border-zinc-800 bg-zinc-950 text-zinc-100 md:flex">
+      <aside className="sticky top-0 hidden h-screen w-65 shrink-0 flex-col border-r border-slate-700/75 bg-slate-950/25 text-slate-100 backdrop-blur-xl md:flex">
         <div className="flex h-10 items-center px-5 mt-10 mb-8">
-          <div className="text-lg font-semibold text-zinc-50">Webhooksmith</div>
+          <div className="flex gap-2  items-center text-lg font-semibold tracking-tight text-slate-50">
+            <Image
+              blurDataURL={webooksmithIcon.blurDataURL}
+              src={webooksmithIcon.src}
+              width={40}
+              height={40}
+              alt="Logo"
+            />
+            <span>Webhooksmith</span>
+          </div>
         </div>
         <nav className="flex-1 px-3 pb-2">
           <ul className="space-y-2">
@@ -48,11 +60,12 @@ export function Sidebar({ logoutUrl }: SidebarProps) {
                 <li key={url}>
                   <Link
                     href={url}
-                    className={[
-                      "flex items-center gap-3.5 rounded-lg px-3.5 py-2.5 text-base",
-                      "transition-colors",
-                      isActive ? "bg-zinc-100 text-zinc-950" : "text-zinc-300 hover:bg-zinc-900 hover:text-zinc-50",
-                    ].join(" ")}
+                    className={classNames([
+                      "flex items-center gap-3.5 rounded-lg px-3.5 py-2.5 text-base transition-colors",
+                      isActive
+                        ? "bg-fuchsia-400/50 text-fuchsia-100"
+                        : "text-slate-300 hover:bg-slate-700/25 hover:text-slate-100",
+                    ])}
                   >
                     {icon}
                     <span className="font-medium">{label}</span>
@@ -62,17 +75,17 @@ export function Sidebar({ logoutUrl }: SidebarProps) {
             })}
           </ul>
         </nav>
-        <div className="border-t-2 border-zinc-800 p-4">
+        <div className="border-t border-slate-700/75 p-4">
           <a
             href={logoutHref}
-            className="flex w-full items-center gap-3.5 rounded-lg px-3.5 py-2.5 text-left text-base text-zinc-300 transition-colors hover:bg-zinc-900 hover:text-zinc-50"
+            className="flex w-full items-center gap-3.5 rounded-lg px-3.5 py-2.5 text-left text-base text-slate-300 transition-colors hover:bg-slate-700/45 hover:text-slate-100"
           >
             <LogOut className="h-5 w-5" />
             <span className="font-medium">Logout</span>
           </a>
         </div>
       </aside>
-      <nav className="fixed inset-x-0 bottom-0 z-50 border-t-2 border-zinc-800 bg-zinc-950/95 px-4 py-2 backdrop-blur md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-700/75 bg-slate-900/92 px-4 py-2 backdrop-blur md:hidden">
         <ul className="flex items-center justify-around">
           {items.map(({ url, label, icon }) => {
             const isActive = url === pathname;
@@ -82,7 +95,7 @@ export function Sidebar({ logoutUrl }: SidebarProps) {
                   href={url}
                   className={[
                     "flex min-w-20 flex-col items-center gap-1 rounded-lg px-3 py-2 text-xs transition-colors",
-                    isActive ? "text-zinc-100" : "text-zinc-400 hover:text-zinc-200",
+                    isActive ? "text-fuchsia-200" : "text-slate-400 hover:bg-slate-700/40 hover:text-slate-100",
                   ].join(" ")}
                 >
                   {icon}
@@ -94,7 +107,7 @@ export function Sidebar({ logoutUrl }: SidebarProps) {
           <li>
             <a
               href={logoutHref}
-              className="flex min-w-20 flex-col items-center gap-1 rounded-lg px-3 py-2 text-xs text-zinc-400 transition-colors hover:text-zinc-200"
+              className="flex min-w-20 flex-col items-center gap-1 rounded-lg px-3 py-2 text-xs text-slate-400 transition-colors hover:bg-slate-700/40 hover:text-slate-100"
             >
               <LogOut className="h-5 w-5" />
               <span className="font-medium">Logout</span>

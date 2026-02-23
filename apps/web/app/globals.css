@@ -1,28 +1,36 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #101c33;
+  --background-elevated: #152541;
+  --foreground: var(--color-slate-100);
+  --muted-foreground: #9fb0cf;
+  --accent: #9b6bff;
+  --accent-strong: #8b5cf6;
+  --border: #314264;
+}
+
+::selection {
+  background-color: var(--accent);
+  color: var(--color-foreground);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-border: var(--border);
   --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
+  background: linear-gradient(to bottom, #101d34 0%, #0c1628 50%, #091121 100%);
   color: var(--foreground);
   font-family: var(--font-sans), sans-serif;
+  min-height: 100svh;
 }
 
 button {

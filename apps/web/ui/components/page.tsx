@@ -14,7 +14,7 @@ export function PageShell({ children, className }: PageShellProps) {
   return (
     <main
       className={classNames(
-        "min-h-screen w-full bg-zinc-950 px-4 pb-24 pt-6 text-zinc-100 sm:px-6 lg:px-10 lg:pb-6 lg:pt-10 xl:px-16",
+        "min-h-screen w-full bg-transparent px-4 pb-24 pt-6 text-slate-100 sm:px-6 lg:px-10 lg:pb-6 lg:pt-10 xl:px-16",
         className,
       )}
     >
