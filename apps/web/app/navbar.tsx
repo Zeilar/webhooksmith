@@ -14,7 +14,13 @@ interface NavbarProps {
   logoutUrl: string;
 }
 
-const items: { url: Route; label: string; icon: ReactNode }[] = [
+interface NavbarItem {
+  url: Route;
+  label: string;
+  icon: ReactNode;
+}
+
+const items: NavbarItem[] = [
   {
     url: "/",
     label: "Webhooks",
@@ -38,15 +44,15 @@ export function Navbar({ logoutUrl }: NavbarProps) {
   const logoutHref = !isLoading && data ? `${logoutUrl}?returnUrl=${encodeURIComponent(data)}` : undefined;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-700/75 bg-slate-950/70 text-slate-100 backdrop-blur-xl px-4">
+    <header className="sticky top-0 z-40 border-b border-slate-700/75 bg-slate-950/70 backdrop-blur-xl px-4">
       <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-3">
-        <Link href="/" className="flex items-center gap-2 text-lg font-semibold tracking-tight text-slate-50">
+        <Link href="/" className="flex items-center gap-2 text-lg font-semibold">
           <Image
             blurDataURL={webooksmithIcon.blurDataURL}
             src={webooksmithIcon.src}
             width={34}
             height={34}
-            alt="Logo"
+            alt="Webhooksmith logo"
           />
           <span>Webhooksmith</span>
         </Link>

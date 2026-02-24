@@ -1,1 +1,157 @@
 # Webhooksmith
+
+Webhooksmith receives incoming webhook payloads, transforming them with a JSON blueprint, and forwards the transformed payload to a destination webhook URL.
+
+## Setup
+
+I recommend always using the latest version of `docker-compose.yml` as your guideline.
+```yml
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: webhooksmith_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: webhooksmith
+      POSTGRES_USER: webhooksmith
+      POSTGRES_PASSWORD: password # Change me
+    ports:
+      - 5432:5432
+    volumes:
+      # I recommend using an absolute path on the host, and that you back that directory up
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - webhooksmith_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U webhooksmith -d webhooksmith"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  api:
+    image: ghcr.io/zeilar/webhooksmith-api:latest
+    container_name: webhooksmith_api
+    restart: unless-stopped
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: webhooksmith
+      DB_USER: webhooksmith
+      DB_PASSWORD: password # Change me
+      DB_LOGGING: true
+      LOG_LEVEL: verbose
+      PORT: 3030
+      HOST: 0.0.0.0
+      ALLOWED_ORIGINS: web,webhooksmith.angelin.foo
+      COOKIE_DOMAIN: .angelin.foo # I recommend using a dot prefix if you use subdomains.
+      SESSION_TTL: 604800000
+      SWAGGER_ENABLED: true
+      SWAGGER_PATH: /docs
+      INITIAL_USERNAME: admin
+      INITIAL_PASSWORD: password
+    # Set up tables etc if they don't exist, I recommend letting the CLI do this
+    # You may remove this whole line after the initial setup, if not then be sure to backup data in case of updates
+    command: sh -c "pnpm db:migrate && node dist/main"
+    ports:
+      - 3030:3030
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - webhooksmith_network
+  web:
+    image: ghcr.io/zeilar/webhooksmith-web:latest
+    container_name: webhooksmith_web
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      API_URL: https://api-webhooksmith.angelin.foo
+      SOCKET_URL: wss://api-webhooksmith.angelin.foo
+    ports:
+      - 3000:3000
+    depends_on:
+      - api
+    networks:
+      - webhooksmith_network
+
+networks:
+  webhooksmith_network:
+    name: webhooksmith_network
+    external: false
+```
+
+## Workflow
+
+* Start by creating the original webhook.
+
+* Create a webhook in Webhooksmith.
+
+* There is an interception URL that you can temporarily update your original webhook to.
+
+* Fire your original webhook, doesn't matter how. You should immediately see the payload in the Webhooksmith tab. Don't worry, the request stops there.
+
+Now you're at a point where you can see what the incoming payload would look like. Now you can use that structure to map the outgoing payload in whatever form you choose.
+
+Whether you want to exclude fields, format things differently, Webhooksmith helps in these niche cases and lets you take control over your apps' webhook payloads. It's rare in my experience that an app allows you do customize the webhook payloads.
+
+## Blueprint example
+
+Incoming payload:
+```json
+{
+  "event": "user.created",
+  "data": {
+    "user": {
+      "id": "u_123",
+      "email": "john@example.com"
+    }
+  }
+}
+```
+
+Blueprint:
+```json
+{
+  "type": "$event",
+  "user_id": "$data.user.id",
+  "email": "$data.user.email",
+  "static_value": "hello"
+}
+```
+
+Transformed output:
+```json
+{
+  "type": "user.created",
+  "user_id": "u_123",
+  "email": "john@example.com",
+  "static_value": "hello"
+}
+```
+
+## Notes
+
+### Database
+* Currently only Postgres is supported. I don't plan on adding more support unless a lot of people use this app, and you can give good arguments for it.
+
+* Keep in mind this is an ongoing project and I can't guarantee that version bumps will be smooth. Always back up your database before updating this app. If the migrate script fails for whatever reason, you may try changing `db:migrate` to `db:push` in the api image command.
+
+### Authentication & security
+* The app uses session cookies for authentication, which is stored in the database. It's used as a single user system, that authenticates with username and password. I don't plan on adding support for external providers or email functionality.
+
+* If you forget your credentials, don't worry. Simply use the `INITIAL_USERNAME` and `INITIAL_PASSWORD` environment variables, and it'll delete all users and insert a new one with those credentials. Nothing except sessions is bound to a user, so the only effect will be that you need to log in again (which you would anyway as it's a new user). The webhooks will be unaffected by this.
+
+* The app doesn't handle certificates or anything of the like. It's up to you to use a proxy or similar solutions to handle that.
+
+* If you choose to enable Swagger, you must be aware that it's not protected. The routes are, but not Swagger itself.
+
+## Final words
+This is a niche app, and I half the reason I built this was to try some new things and stay up to date. I'd be happy for feedback, and feel free to open issues. I can't promise I'll resolve them quickly, but I'll do my best to maintain this little app.
+
+Know that I built the app mostly for myself, and figured it'd be cool to share it with others as I couldn't find an existing app for this solution. If there are, I don't mind you using those instead.
+
+### AI
+I know there's many people concerned about vibe coded apps nowadays. Full transparency, I have used Codex as a tool to help develop this app. Everything was reviewed and approved by me, there wasn't a single line of code generated by Codex that I didn't approve. Everything it generated is something that I myself could've written. Take it from a developer with more than 5 years experience.
+
+Having said that, the styles, Swagger and test suites were largely generated by Codex. There's no reason hiding it because I think it's blatantly obvious when you read it. But again, it was all approved by me.
+
+I'm not a big AI guy, does the above description fit vibe coding? I believe not, but if you disagree that's fine.

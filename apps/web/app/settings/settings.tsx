@@ -158,7 +158,7 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
                     validators={{
                       onChange: ({ value }) => {
                         const parsed = Number(value);
-                        return !Number.isFinite(parsed) || parsed < PER_PAGE_MIN || parsed > PER_PAGE_MAX
+                        return !isFinite(parsed) || parsed < PER_PAGE_MIN || parsed > PER_PAGE_MAX
                           ? `Must be between ${PER_PAGE_MIN} and ${PER_PAGE_MAX}`
                           : undefined;
                       },
