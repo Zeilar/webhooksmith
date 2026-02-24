@@ -2,8 +2,11 @@ import { serverFetcher } from "@/api/fetchers/server";
 import { WebhooksPage } from "./webhooks";
 import type { PaginatedWebhooksDto } from "@workspace/lib/dto";
 import type { Settings } from "@workspace/lib/db/schema";
+import { requireUser } from "@/api/server/auth";
 
 export default async function Page({ searchParams }: PageProps<"/">) {
+  await requireUser();
+
   const params = await searchParams;
   const pageParam = Array.isArray(params.page) ? params.page.at(0) : params.page;
 
