@@ -1,5 +1,5 @@
 services:
-  webooksmith-db:
+  webhooksmith-db:
     image: postgres:16-alpine
     container_name: webhooksmith_db
     restart: unless-stopped
@@ -19,7 +19,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 20
-  webooksmith-api:
+  webhooksmith-api:
     image: ghcr.io/zeilar/webhooksmith-api:latest
     container_name: webhooksmith_api
     restart: unless-stopped
