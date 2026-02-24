@@ -1,6 +1,5 @@
 import { UpdateUserDto } from "@workspace/lib/dto";
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,

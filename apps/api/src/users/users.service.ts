@@ -82,11 +82,6 @@ export class UsersService {
       Logger.verbose(`Updating user with id: ${id}`, UsersService.name);
       const username = dto.username?.trim();
       const password = dto.password?.trim();
-      if (username && (await this.isUsernameTaken(username))) {
-        const message = `Username: ${username} is taken`;
-        Logger.warn(message);
-        throw new ConflictException(message);
-      }
       const [user] = await this.db
         .update(users)
         .set({
