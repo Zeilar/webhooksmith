@@ -1,5 +1,5 @@
 services:
-  db:
+  webooksmith-db:
     image: postgres:16-alpine
     container_name: webhooksmith_db
     restart: unless-stopped
@@ -19,25 +19,26 @@ services:
       interval: 5s
       timeout: 5s
       retries: 20
-  api:
+  webooksmith-api:
     image: ghcr.io/zeilar/webhooksmith-api:latest
     container_name: webhooksmith_api
     restart: unless-stopped
     environment:
-      DB_HOST: db
+      DB_HOST: webhooksmith-db
       DB_PORT: 5432
       DB_NAME: webhooksmith
       DB_USER: webhooksmith
       DB_PASSWORD: password # Change me
-      DB_LOGGING: true
+      DB_LOGGING: false
       LOG_LEVEL: verbose
       PORT: 3030
       HOST: 0.0.0.0
       ALLOWED_ORIGINS: web,webhooksmith.angelin.foo
       COOKIE_DOMAIN: .angelin.foo # I recommend using a dot prefix if you use subdomains.
-      SESSION_TTL: 604800000
-      SWAGGER_ENABLED: true
+      SESSION_TTL: 604800000 # 7 days
+      SWAGGER_ENABLED: false
       SWAGGER_PATH: /docs
+      # Remove these after first setup, or if you need to recover the user.
       INITIAL_USERNAME: admin
       INITIAL_PASSWORD: password
     # Set up tables etc if they don't exist, I recommend letting the CLI do this.
@@ -46,22 +47,21 @@ services:
     ports:
       - 3030:3030
     depends_on:
-      db:
+      webhooksmith-db:
         condition: service_healthy
     networks:
       - webhooksmith_network
-  web:
+  webhooksmith-web:
     image: ghcr.io/zeilar/webhooksmith-web:latest
     container_name: webhooksmith_web
     restart: unless-stopped
     environment:
-      NODE_ENV: production
       API_URL: https://api-webhooksmith.angelin.foo
       SOCKET_URL: wss://api-webhooksmith.angelin.foo
     ports:
       - 3000:3000
     depends_on:
-      - api
+      - webhooksmith-api
     networks:
       - webhooksmith_network
 

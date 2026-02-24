@@ -18,7 +18,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-      # I recommend using an absolute path on the host, and that you back that directory up
+      # I recommend using an absolute path on the host, and that you back that directory up.
       - ./data:/var/lib/postgresql/data
     networks:
       - webhooksmith_network
@@ -48,8 +48,8 @@ services:
       SWAGGER_PATH: /docs
       INITIAL_USERNAME: admin
       INITIAL_PASSWORD: password
-    # Set up tables etc if they don't exist, I recommend letting the CLI do this
-    # You may remove this whole line after the initial setup, if not then be sure to backup data in case of updates
+    # Set up tables etc if they don't exist, I recommend letting the CLI do this.
+    # You may remove this whole line after the initial setup, if not then be sure to backup data in case of updates.
     command: sh -c "pnpm db:migrate && node dist/main"
     ports:
       - 3030:3030

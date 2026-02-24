@@ -1,16 +1,15 @@
 services:
-  db:
+  webhooksmith-db:
     image: postgres:16-alpine
     container_name: webhooksmith_db
     restart: unless-stopped
     environment:
       POSTGRES_DB: webhooksmith
       POSTGRES_USER: webhooksmith
-      POSTGRES_PASSWORD: password # Change me
+      POSTGRES_PASSWORD: password
     ports:
       - 5432:5432
     volumes:
-      # I recommend using an absolute path on the host, and that you back that directory up.
       - ./data:/var/lib/postgresql/data
     networks:
       - webhooksmith_network
@@ -19,19 +18,19 @@ services:
       interval: 5s
       timeout: 5s
       retries: 20
-  api:
+  webhooksmith-api:
     build:
       context: .
       dockerfile: apps/api/Dockerfile
     container_name: webhooksmith_api
     restart: unless-stopped
     environment:
-      DB_HOST: db
+      DB_HOST: webhooksmith-db
       DB_PORT: 5432
       DB_NAME: webhooksmith
       DB_USER: webhooksmith
-      DB_PASSWORD: password # Change me
-      DB_LOGGING: false
+      DB_PASSWORD: password
+      DB_LOGGING: true
       LOG_LEVEL: verbose
       PORT: 3030
       HOST: 0.0.0.0
@@ -42,13 +41,11 @@ services:
       SWAGGER_PATH: /docs
       INITIAL_USERNAME: admin
       INITIAL_PASSWORD: password
-    # Set up tables etc if they don't exist, I recommend letting the CLI do this.
-    # You may remove this whole line after the initial setup, if not then be sure to backup data in case of updates.
     command: sh -c "pnpm db:migrate && node dist/main"
     ports:
       - 3030:3030
     depends_on:
-      db:
+      webhooksmith-db:
         condition: service_healthy
     networks:
       - webhooksmith_network
@@ -59,14 +56,12 @@ services:
     container_name: webhooksmith_web
     restart: unless-stopped
     environment:
-      NODE_ENV: production
       API_URL: https://api-webhooksmith.angelin.foo
       SOCKET_URL: wss://api-webhooksmith.angelin.foo
-      NEXT_TELEMETRY_DISABLED: 1
     ports:
       - 3000:3000
     depends_on:
-      - api
+      - webhooksmith-api
     networks:
       - webhooksmith_network
 
