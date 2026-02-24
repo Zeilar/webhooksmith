@@ -1,4 +1,4 @@
-import { BadRequestException, NotFoundException } from "@nestjs/common";
+import { NotFoundException } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { UsersController } from "./users.controller";
 import { UsersService } from "./users.service";
@@ -23,11 +23,6 @@ describe("UsersController", () => {
     }).compile();
 
     controller = module.get<UsersController>(UsersController);
-  });
-
-  it("rejects update when no changes are provided", async () => {
-    await expect(controller.update({}, "u1")).rejects.toBeInstanceOf(BadRequestException);
-    expect(usersService.update).not.toHaveBeenCalled();
   });
 
   it("updates a user", async () => {

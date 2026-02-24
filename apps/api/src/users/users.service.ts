@@ -102,7 +102,7 @@ export class UsersService {
       Logger.log(`Updated user with id: ${id}`, UsersService.name);
       return user;
     } catch (error) {
-      if (!(error instanceof BadRequestException) || !(error instanceof ConflictException)) {
+      if (!(error instanceof BadRequestException) && !(error instanceof ConflictException)) {
         Logger.error(`Failed to update user with id ${id}`, UsersService.name);
       }
       throw error;

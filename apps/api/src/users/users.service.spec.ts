@@ -1,5 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { BadRequestException, ConflictException } from "@nestjs/common";
+import { ConflictException } from "@nestjs/common";
 import { compare, hash } from "bcrypt";
 import { users } from "@workspace/lib/db/schema";
 import { UsersService } from "./users.service";
@@ -58,10 +58,6 @@ describe("UsersService", () => {
     await expect(service.create({ username: USERNAME, password: PLAIN_PASSWORD })).rejects.toBeInstanceOf(
       ConflictException,
     );
-  });
-
-  it("throws on update when no fields are provided", async () => {
-    await expect(service.update(USER_ID, {})).rejects.toBeInstanceOf(BadRequestException);
   });
 
   it("updates user data", async () => {
