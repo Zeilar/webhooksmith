@@ -3,8 +3,9 @@
 import { useFetcher } from "@/api/fetchers/client";
 import { useRouter } from "next/navigation";
 import { useForm } from "@/ui";
-import { PageContainer, PageShell } from "@/ui/components";
+import { PageContainer, PageShell, Panel } from "@/ui/components";
 import type { SignInDto } from "@workspace/lib/dto";
+import { LogIn } from "lucide-react";
 import { toast } from "sonner";
 
 export function SignIn() {
@@ -38,33 +39,43 @@ export function SignIn() {
 
   return (
     <PageShell>
-      <PageContainer maxWidthClassName="max-w-md" className="flex min-h-[calc(100vh-10rem)] items-center">
+      <PageContainer maxWidthClassName="max-w-sm" className="flex min-h-[calc(100svh-10rem)] items-center">
         <form.AppForm>
-          <form.Form className="w-full space-y-4 rounded-2xl border border-slate-700/75 bg-slate-900/55 p-6 shadow-xl shadow-slate-950/20 backdrop-blur-sm">
-            <h1 className="text-xl font-semibold">Sign in</h1>
-            <form.AppField
-              name="username"
-              validators={{
-                // Clear existing API errors so that submit button is
-                onChange: ({ fieldApi }) => {
-                  fieldApi.setErrorMap({});
-                },
-              }}
+          <form.Form className="w-full">
+            <Panel
+              title={
+                <span className="flex items-center gap-2">
+                  <LogIn className="h-4 w-4 text-fuchsia-400" />
+                  Sign in
+                </span>
+              }
             >
-              {(field) => <field.Input label="Username" required />}
-            </form.AppField>
-            <form.AppField
-              name="password"
-              validators={{
-                // Clear existing API errors so that submit button is
-                onChange: ({ fieldApi }) => {
-                  fieldApi.setErrorMap({});
-                },
-              }}
-            >
-              {(field) => <field.Input label="Password" type="password" required />}
-            </form.AppField>
-            <form.SubmitButton className="w-full">Sign in</form.SubmitButton>
+              <div className="space-y-4">
+                <form.AppField
+                  name="username"
+                  validators={{
+                    // Clear existing API errors
+                    onChange: ({ fieldApi }) => {
+                      fieldApi.setErrorMap({});
+                    },
+                  }}
+                >
+                  {(field) => <field.Input label="Username" required />}
+                </form.AppField>
+                <form.AppField
+                  name="password"
+                  validators={{
+                    // Clear existing API errors
+                    onChange: ({ fieldApi }) => {
+                      fieldApi.setErrorMap({});
+                    },
+                  }}
+                >
+                  {(field) => <field.Input label="Password" type="password" required />}
+                </form.AppField>
+                <form.SubmitButton className="w-full">Sign in</form.SubmitButton>
+              </div>
+            </Panel>
           </form.Form>
         </form.AppForm>
       </PageContainer>

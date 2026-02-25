@@ -1,5 +1,15 @@
 import { CircleX } from "lucide-react";
 import { StatusPage } from "@/app/(components)/status-page";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Page Not Found | Webhooksmith",
+  description: "The requested page could not be found.",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default function Page() {
   return (

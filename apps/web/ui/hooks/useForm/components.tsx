@@ -305,7 +305,7 @@ export function Editor({
   helperText,
   className,
   editorClassName,
-  height = 350,
+  height = 250,
   language = "json",
   options,
 }: EditorProps) {

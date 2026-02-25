@@ -19,7 +19,7 @@ import {
 import { useParams, useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Button, ErrorAlert, Modal, Panel, Required } from "@/ui/components";
+import { Button, EnabledSegmentedControl, ErrorAlert, Modal, Panel, Required } from "@/ui/components";
 import { PageContainer, PageShell, PageTitle } from "@/ui/components";
 import { useSocket } from "@/ui";
 import { useForm, useDisclosure } from "@/ui/hooks";
@@ -203,16 +203,18 @@ export function WebhookBuilder({
                     Details
                   </span>
                 }
+                headerAction={
+                  <form.AppField name="enabled">
+                    {(field) => <EnabledSegmentedControl enabled={field.state.value} onChange={field.handleChange} />}
+                  </form.AppField>
+                }
               >
                 <div className="space-y-3">
-                  <form.AppField name="enabled">{(field) => <field.Switch label="Enabled" />}</form.AppField>
-                  <div className="w-full md:w-1/2">
-                    <form.AppField name="name">
-                      {(field) => <field.Input id="name-input" label="Name" type="text" required />}
-                    </form.AppField>
-                  </div>
+                  <form.AppField name="name">
+                    {(field) => <field.Input className="max-w-md" label="Name" type="text" required />}
+                  </form.AppField>
                   <form.AppField name="description">
-                    {(field) => <field.TextArea id="description-input" label="Description" rows={3} />}
+                    {(field) => <field.TextArea label="Description" rows={3} />}
                   </form.AppField>
                   <form.AppField
                     name="receiver"
@@ -225,7 +227,6 @@ export function WebhookBuilder({
                         placeholder="https://discord.com/api/webhooks/XXXXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
                         type="url"
                         label="Receiver"
-                        id="receiver-input"
                         required
                       />
                     )}

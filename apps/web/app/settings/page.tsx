@@ -3,6 +3,13 @@ import type { Settings as ISettings } from "@workspace/lib/db/schema";
 import { requireUser } from "@/api/server/auth";
 import { Settings } from "./settings";
 import { cookies } from "next/headers";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Settings | Webhooksmith",
+  description: "Configure your account and preferences.",
+  alternates: { canonical: "/settings" },
+};
 
 export default async function Page() {
   const user = await requireUser();

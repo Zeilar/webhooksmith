@@ -56,6 +56,7 @@ services:
     container_name: webhooksmith_web
     restart: unless-stopped
     environment:
+      WEB_URL: https://webhooksmith.angelin.foo # Optional for SEO
       API_URL: https://api-webhooksmith.angelin.foo
       SOCKET_URL: wss://api-webhooksmith.angelin.foo
     ports:

@@ -1,7 +1,7 @@
 services:
   webhooksmith-db:
     image: postgres:16-alpine
-    container_name: webhooksmith_db
+    container_name: webhooksmith_dev_db
     restart: unless-stopped
     environment:
       POSTGRES_DB: webhooksmith

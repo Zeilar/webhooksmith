@@ -1,4 +1,5 @@
 export * from "./button";
+export * from "./enabled-segmented-control";
 export * from "./error-alert";
 export * from "./modal";
 export * from "./panel";

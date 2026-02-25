@@ -17,9 +17,49 @@ const inter = Inter({
 
 export const dynamic = "force-dynamic";
 
+const siteTitle = "Webhooksmith";
+const siteDescription = "Take control of your services' webhooks.";
+const ogImagePath = "/webhooksmith.png";
+
+function getMetadataBase(): URL | null {
+  const raw = process.env.WEB_URL ?? "http://localhost:3000";
+  try {
+    return new URL(raw);
+  } catch {
+    return null;
+  }
+}
+
 export const metadata: Metadata = {
-  title: "Webhooksmith",
-  description: "Take control of your services' webhooks.",
+  metadataBase: getMetadataBase(),
+  title: siteTitle,
+  description: siteDescription,
+  applicationName: siteTitle,
+  alternates: { canonical: "/" },
+  icons: {
+    icon: [{ url: ogImagePath, type: "image/png" }],
+    shortcut: [ogImagePath],
+    apple: [{ url: ogImagePath, type: "image/png" }],
+  },
+  manifest: "/site.webmanifest",
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    type: "website",
+    title: siteTitle,
+    description: siteDescription,
+    siteName: siteTitle,
+    url: "/",
+    images: [{ url: ogImagePath, alt: siteTitle }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteTitle,
+    description: siteDescription,
+    images: [ogImagePath],
+  },
 };
 
 export default async function RootLayout({ children }: PropsWithChildren) {

@@ -10,7 +10,7 @@ export const buttonVariants = cva(
         default: "bg-fuchsia-400/40 hover:bg-fuchsia-400/50",
         secondary: "border border-slate-500/70 bg-slate-800/65 hover:bg-slate-700/75",
         outline: "border border-slate-700/75 bg-slate-900/30 hover:bg-slate-800/35",
-        ghost: "text-slate-200 hover:bg-slate-800/65",
+        ghost: "hover:bg-slate-800/65",
         danger: "bg-red-600/50 hover:bg-red-600/60",
       },
       size: {

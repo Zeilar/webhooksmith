@@ -4,6 +4,16 @@ import { serverFetcher } from "@/api/fetchers/server";
 import type { Webhook } from "@workspace/lib/db/schema";
 import { randomBase58 } from "@workspace/lib/common";
 import { requireUser } from "@/api/server/auth";
+import type { Metadata } from "next";
+
+export async function generateMetadata({ params }: PageProps<"/webhooks/[id]">): Promise<Metadata> {
+  const { id } = await params;
+  return {
+    title: `Webhook ${id} | Webhooksmith`,
+    description: "View and edit webhook.",
+    alternates: { canonical: `/webhooks/${id}` },
+  };
+}
 
 export default async function Page({ params }: PageProps<"/webhooks/[id]">) {
   await requireUser();

@@ -1,7 +1,7 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Logger, Post, Query, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { SignInDto } from "@workspace/lib/dto";
-import type { Request, Response } from "express";
+import type { CookieOptions, Request, Response } from "express";
 import { COOKIE_NAME } from "./auth.config";
 import { parse } from "cookie";
 import { AuthGuard } from "./auth.guard";
@@ -24,7 +24,7 @@ export class AuthController {
 
   @ApiOperation({ summary: "Sign in and set the session cookie." })
   @ApiBody({ type: SignInDto })
-  @ApiNoContentResponse({ description: "Signed in successfully; session cookie was set." })
+  @ApiFoundResponse({ description: "Signed in successfully; session cookie was set." })
   @ApiNotFoundResponse({ description: "No user exists for the provided username." })
   @ApiUnauthorizedResponse({ description: "Password is incorrect." })
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -34,16 +34,19 @@ export class AuthController {
     const sessionId = await this.authService.authenticate(dto);
 
     const cookieDomain = process.env.COOKIE_DOMAIN.trim();
-
-    // Avoid duplicate and particularly stale cookies.
-    res.clearCookie(COOKIE_NAME, { path: "/", domain: cookieDomain, httpOnly: true, secure: true, sameSite: "strict" });
-
-    res.cookie(COOKIE_NAME, sessionId, {
+    const cookieOptions: CookieOptions = {
+      path: "/",
       domain: cookieDomain,
       httpOnly: true,
       secure: true,
       sameSite: "strict",
-      path: "/",
+    };
+
+    // Delete old cookie.
+    res.clearCookie(COOKIE_NAME, cookieOptions);
+
+    res.cookie(COOKIE_NAME, sessionId, {
+      ...cookieOptions,
       maxAge: Number(process.env.SESSION_TTL),
     });
   }
@@ -61,11 +64,7 @@ export class AuthController {
     const sessionId = req.headers.cookie ? parse(req.headers.cookie)[COOKIE_NAME] : undefined;
 
     if (sessionId) {
-      try {
-        await this.authService.logout(sessionId);
-      } catch {
-        Logger.warn(`Failed to log out session with id: ${sessionId}, continuing with redirect`, AuthController.name);
-      }
+      await this.authService.logout(sessionId);
     }
 
     res.clearCookie(COOKIE_NAME, {

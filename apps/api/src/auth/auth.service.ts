@@ -55,7 +55,7 @@ export class AuthService {
       await this.sessionsService.deleteById(sessionId);
       Logger.log(`Signed out session with id: ${sessionId}`, AuthService.name);
     } catch (error) {
-      Logger.error(`Sign-out failed for session with id: ${sessionId}`, AuthService.name);
+      Logger.error(`Failed to delete session with id: ${sessionId}`, AuthService.name);
       throw error;
     }
   }

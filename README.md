@@ -63,7 +63,7 @@ services:
     container_name: webhooksmith_web
     restart: unless-stopped
     environment:
-      NODE_ENV: production
+      WEB_URL: https://webhooksmith.angelin.foo # Optional for SEO
       API_URL: https://api-webhooksmith.angelin.foo
       SOCKET_URL: wss://api-webhooksmith.angelin.foo
     ports:
@@ -138,7 +138,9 @@ Transformed output:
 ### Authentication & security
 * The app uses session cookies for authentication, which is stored in the database. It's used as a single user system, that authenticates with username and password. I don't plan on adding support for external providers or email functionality.
 
-* If you forget your credentials, don't worry. Simply use the `INITIAL_USERNAME` and `INITIAL_PASSWORD` environment variables, and it'll delete all users and insert a new one with those credentials. Nothing except sessions is bound to a user, so the only effect will be that you need to log in again (which you would anyway as it's a new user). The webhooks will be unaffected by this.
+* Many requests happen directly between client and API, meaning the API must be reachable from the browser. I may refactor this in the future so all requests go to the web server first, meaning the API would only need to be reachable between from the web server.
+
+* If you forget your credentials, don't worry. Simply use the `INITIAL_USERNAME` and `INITIAL_PASSWORD` environment variables, and it'll delete all users and insert a new one with those credentials. Nothing except sessions is bound to a user, so the only effect will be that you need to log in again (which you would anyway as it's a new user). The rest of the app will be unaffected by this.
 
 * The app doesn't handle certificates or anything of the like. It's up to you to use a proxy or similar solutions to handle that.
 

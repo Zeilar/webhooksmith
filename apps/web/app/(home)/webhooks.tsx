@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { Activity, type ReactNode } from "react";
 import { ArrowRight, ChevronLeft, ChevronRight, Plus, Webhook as WebhookIcon } from "lucide-react";
 import type { Webhook } from "@workspace/lib/db/schema";
 import classNames from "classnames";
@@ -65,7 +65,7 @@ export function WebhooksPage({ webhooks, page, total, totalPages }: WebhooksPage
                 </Link>
               </div>
               <div className="shrink-0">
-                <WebhookEnabledSwitch webhookId={id} initialEnabled={enabled ?? true} />
+                <WebhookEnabledSwitch enabled={enabled} />
               </div>
             </div>
           </div>
@@ -88,45 +88,47 @@ export function WebhooksPage({ webhooks, page, total, totalPages }: WebhooksPage
           }
         />
         {content}
-        <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-slate-300/85">
-            Page {page} of {totalPages} ({total} total)
-          </p>
-          <div className="flex items-center gap-3">
-            {page > 1 ? (
-              <Link href={`/?page=${page - 1}`} className={buttonVariants({ variant: "outline" })}>
-                <ChevronLeft className="h-4 w-4" />
-                Previous
-              </Link>
-            ) : (
-              <span
-                className={classNames(
-                  buttonVariants({ variant: "outline" }),
-                  "pointer-events-none opacity-50 select-none",
-                )}
-              >
-                <ChevronLeft className="h-4 w-4" />
-                Previous
-              </span>
-            )}
-            {page < totalPages ? (
-              <Link href={`/?page=${page + 1}`} className={buttonVariants({ variant: "outline" })}>
-                Next
-                <ChevronRight className="h-4 w-4" />
-              </Link>
-            ) : (
-              <span
-                className={classNames(
-                  buttonVariants({ variant: "outline" }),
-                  "pointer-events-none opacity-50 select-none",
-                )}
-              >
-                Next
-                <ChevronRight className="h-4 w-4" />
-              </span>
-            )}
+        <Activity mode={total > 0 ? "visible" : "hidden"}>
+          <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm text-slate-300/85">
+              Page {page} of {totalPages} ({total} total)
+            </p>
+            <div className="flex items-center gap-3">
+              {page > 1 ? (
+                <Link href={`/?page=${page - 1}`} className={buttonVariants({ variant: "outline" })}>
+                  <ChevronLeft className="h-4 w-4" />
+                  Previous
+                </Link>
+              ) : (
+                <span
+                  className={classNames(
+                    buttonVariants({ variant: "outline" }),
+                    "pointer-events-none opacity-50 select-none",
+                  )}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  Previous
+                </span>
+              )}
+              {page < totalPages ? (
+                <Link href={`/?page=${page + 1}`} className={buttonVariants({ variant: "outline" })}>
+                  Next
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+              ) : (
+                <span
+                  className={classNames(
+                    buttonVariants({ variant: "outline" }),
+                    "pointer-events-none opacity-50 select-none",
+                  )}
+                >
+                  Next
+                  <ChevronRight className="h-4 w-4" />
+                </span>
+              )}
+            </div>
           </div>
-        </div>
+        </Activity>
       </PageContainer>
     </PageShell>
   );

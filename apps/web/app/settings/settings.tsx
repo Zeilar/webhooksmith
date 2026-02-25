@@ -5,7 +5,7 @@ import { useForm } from "@/ui";
 import { PageContainer, PageShell, PageTitle, Panel } from "@/ui/components";
 import { PER_PAGE_MAX, PER_PAGE_MIN } from "@workspace/lib/dto/settings/constants";
 import type { UpdateSettingsDto, UpdateUserDto } from "@workspace/lib/dto";
-import { Monitor, Save, Shield, User } from "lucide-react";
+import { Monitor, Save, Settings as SettingsIcon, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { isStrongPassword } from "class-validator";
 import { toast } from "sonner";
@@ -23,11 +23,10 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
 
   const userForm = useForm({
     defaultValues: {
-      userId,
       username: currentUsername,
       password: "",
       passwordConfirmation: "",
-    } satisfies UpdateUserDto & { passwordConfirmation: string; userId: string },
+    } satisfies UpdateUserDto & { passwordConfirmation: string },
     onSubmit: async ({ value }) => {
       try {
         const username = value.username !== currentUsername ? value.username.trim() || undefined : undefined;
@@ -73,9 +72,9 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
 
   return (
     <PageShell>
-      <PageContainer>
-        <PageTitle icon={<User className="h-5 w-5" />} title="Settings" />
-        <div className="space-y-4">
+      <PageContainer maxWidthClassName="max-w-xl">
+        <PageTitle icon={<SettingsIcon className="h-5 w-5" />} title="Settings" />
+        <div className="space-y-8">
           <userForm.AppForm>
             <userForm.Form className="space-y-4">
               <Panel
@@ -86,53 +85,45 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
                   </span>
                 }
               >
-                <div className="max-w-sm space-y-4">
-                  <userForm.AppField name="userId">
-                    {(field) => <field.Input label="Id" readOnly disabled />}
-                  </userForm.AppField>
+                <div className="space-y-4">
                   <userForm.AppField name="username">
-                    {(field) => <field.Input label="Username" placeholder={currentUsername} />}
+                    {(field) => <field.Input className="max-w-3xs" label="Username" placeholder={currentUsername} />}
                   </userForm.AppField>
-                </div>
-              </Panel>
-              <Panel
-                title={
-                  <span className="flex items-center gap-2">
-                    <Shield className="h-4 w-4 text-fuchsia-400" />
-                    Security
-                  </span>
-                }
-              >
-                <div className="flex max-w-sm flex-col gap-4">
-                  <userForm.AppField name="password">
-                    {(field) => {
-                      const password = field.state.value?.trim();
-                      const isStrong = isStrongPassword(password);
+                  <div className="flex flex-col gap-4 sm:flex-row">
+                    <div className="flex-1">
+                      <userForm.AppField name="password">
+                        {(field) => {
+                          const password = field.state.value?.trim();
+                          const isStrong = isStrongPassword(password);
 
-                      return (
-                        <div className="space-y-2">
-                          <field.Input label="Password" type="password" placeholder="Optional" />
-                          {password && (
-                            <p className={classNames("text-xs", isStrong ? "text-emerald-400" : "text-amber-400")}>
-                              Password strength: {isStrong ? "Strong" : "Weak"}
-                            </p>
-                          )}
-                        </div>
-                      );
-                    }}
-                  </userForm.AppField>
-                  <userForm.AppField
-                    name="passwordConfirmation"
-                    validators={{
-                      onChangeListenTo: ["password"],
-                      onChange: ({ value, fieldApi }) => {
-                        const password = fieldApi.form.getFieldValue("password");
-                        return password && value !== password ? "Passwords do not match" : undefined;
-                      },
-                    }}
-                  >
-                    {(field) => <field.Input label="Confirm password" type="password" placeholder="Optional" />}
-                  </userForm.AppField>
+                          return (
+                            <div className="space-y-2">
+                              <field.Input label="Password" type="password" placeholder="Optional" />
+                              {password && (
+                                <p className={classNames("text-xs", isStrong ? "text-emerald-400" : "text-amber-400")}>
+                                  Password strength: {isStrong ? "Strong" : "Weak"}
+                                </p>
+                              )}
+                            </div>
+                          );
+                        }}
+                      </userForm.AppField>
+                    </div>
+                    <div className="flex-1">
+                      <userForm.AppField
+                        name="passwordConfirmation"
+                        validators={{
+                          onChangeListenTo: ["password"],
+                          onChange: ({ value, fieldApi }) => {
+                            const password = fieldApi.form.getFieldValue("password");
+                            return password && value !== password ? "Passwords do not match" : undefined;
+                          },
+                        }}
+                      >
+                        {(field) => <field.Input label="Confirm password" type="password" placeholder="Optional" />}
+                      </userForm.AppField>
+                    </div>
+                  </div>
                 </div>
               </Panel>
               <div className="mt-4 flex items-center gap-4">
@@ -141,7 +132,6 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
               </div>
             </userForm.Form>
           </userForm.AppForm>
-          <PageTitle icon={<Monitor className="h-5 w-5" />} title="Display settings" className="mt-8" />
           <settingsForm.AppForm>
             <settingsForm.Form className="space-y-4">
               <Panel
