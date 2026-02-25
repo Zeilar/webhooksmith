@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, Logger, Post, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { SignInDto } from "@workspace/lib/dto";
 import type { CookieOptions, Request, Response } from "express";
@@ -64,7 +64,11 @@ export class AuthController {
     const sessionId = req.headers.cookie ? parse(req.headers.cookie)[COOKIE_NAME] : undefined;
 
     if (sessionId) {
-      await this.authService.logout(sessionId);
+      try {
+        await this.authService.logout(sessionId);
+      } catch {
+        Logger.warn(`Failed to log out session with id: ${sessionId}, continuing with redirect`, AuthController.name);
+      }
     }
 
     res.clearCookie(COOKIE_NAME, {
