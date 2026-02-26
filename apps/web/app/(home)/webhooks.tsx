@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Activity, type ReactNode } from "react";
-import { ArrowRight, ChevronLeft, ChevronRight, Plus, Webhook as WebhookIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Webhook as WebhookIcon } from "lucide-react";
 import type { Webhook } from "@workspace/lib/db/schema";
 import classNames from "classnames";
 import { buttonVariants } from "@/ui/components/button";
@@ -47,24 +47,22 @@ export function WebhooksPage({ webhooks, page, total, totalPages }: WebhooksPage
         {webhooks.map(({ id, name, description, enabled }) => (
           <div
             key={id}
-            className="group relative overflow-hidden rounded-2xl border border-slate-700/75 bg-slate-950/25 p-4"
+            className="group relative overflow-hidden rounded-2xl border border-slate-700/75 bg-slate-950/25 p-4 transition-colors hover:bg-slate-950/45"
           >
-            <div className="relative flex items-start justify-between gap-4 h-full">
-              <div className="h-full flex flex-col items-start">
+            <Link
+              href={`/webhooks/${id}`}
+              className="absolute inset-0 z-10 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+            />
+            <div className="relative flex h-full items-start justify-between gap-4">
+              <div className="min-w-0 flex-1">
                 <h6 className="truncate text-md font-semibold">{name}</h6>
-                <div className="mb-4">
-                  {description ? (
+                {description && (
+                  <div className="mt-1">
                     <div className="line-clamp-3 text-sm text-slate-300/85">{description}</div>
-                  ) : (
-                    <div className="text-sm text-slate-300/85">No description</div>
-                  )}
-                </div>
-                <Link href={`/webhooks/${id}`} className={buttonVariants({ variant: "outline", className: "mt-auto" })}>
-                  Details
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
+                  </div>
+                )}
               </div>
-              <div className="shrink-0">
+              <div className="relative z-20 shrink-0">
                 <WebhookEnabledSwitch enabled={enabled} />
               </div>
             </div>
