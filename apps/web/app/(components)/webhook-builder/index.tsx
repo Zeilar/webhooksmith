@@ -17,7 +17,7 @@ import {
   Webhook as WebhookIcon,
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button, EnabledSegmentedControl, ErrorAlert, Modal, Panel, Required } from "@/ui/components";
 import { PageContainer, PageShell, PageTitle } from "@/ui/components";
@@ -81,9 +81,13 @@ export function WebhookBuilder({
     },
   });
   const socket = useSocket();
-  const interceptUrl = `https://webhooksmith.angelin.foo/webhooks/intercept/${interceptId}`;
+  const interceptUrlQuery = useQuery({
+    queryKey: ["intercept-url"],
+    queryFn: () => `${window.location.origin}/webhooks/intercept/${interceptId}`,
+    initialData: "",
+  });
   const copyInterceptUrl = async () => {
-    await navigator.clipboard.writeText(interceptUrl);
+    await navigator.clipboard.writeText(interceptUrlQuery.data);
     copied.open();
     if (copyResetTimeoutRef.current) {
       clearTimeout(copyResetTimeoutRef.current);
@@ -243,17 +247,27 @@ export function WebhookBuilder({
               >
                 <div className="space-y-2">
                   <p className="text-sm text-slate-300">Use this URL in your app to intercept a response</p>
-                  <span className="inline-flex max-w-full items-start gap-1 rounded-md border border-slate-700/75 bg-slate-800/65 px-2 py-1 text-sm">
-                    <code className="min-w-0 break-all">{interceptUrl}</code>
-                    <button
-                      type="button"
-                      onClick={copyInterceptUrl}
-                      className="ml-1 mt-0.5 shrink-0 rounded p-0.5 transition-colors hover:text-accent disabled:cursor-not-allowed disabled:opacity-40"
-                      title={isCopiedVisible ? "Copied" : "Copy"}
-                    >
-                      {isCopiedVisible ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
-                    </button>
-                  </span>
+                  {interceptUrlQuery.isPending || interceptUrlQuery.isFetching ? (
+                    <span className="inline-flex items-center rounded-md border border-slate-700/75 bg-slate-800/65 px-2 py-1 text-sm text-slate-300">
+                      <LoaderCircle className="h-5 w-5 animate-spin" />
+                    </span>
+                  ) : (
+                    <span className="inline-flex max-w-full items-center gap-1 rounded-md border border-slate-700/75 bg-slate-800/65 px-2 py-1 text-sm">
+                      <code className="min-w-0 break-all">{interceptUrlQuery.data}</code>
+                      <button
+                        type="button"
+                        onClick={copyInterceptUrl}
+                        className="ml-1 shrink-0 rounded p-0.5 transition-colors hover:text-accent disabled:cursor-not-allowed disabled:opacity-40"
+                        title={isCopiedVisible ? "Copied" : "Copy"}
+                      >
+                        {isCopiedVisible ? (
+                          <Check className="h-4 w-4 text-emerald-400" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </button>
+                    </span>
+                  )}
                 </div>
               </Panel>
               <section className="grid grid-cols-1 gap-4 2xl:grid-cols-2">
