@@ -1,14 +1,14 @@
 import { toast } from "sonner";
 import type { CreateWebhookDto, UpdateWebhookDto } from "@workspace/lib/dto";
-import type { FetcherFn } from "@/api/fetchers/fetcher";
 import type { Webhook } from "@workspace/lib/db/schema";
+import type { ClientFetcher } from "@/api/fetchers/client";
 
 export async function createOnSubmit(
-  fetcher: FetcherFn,
+  fetcher: ClientFetcher,
   dto: CreateWebhookDto,
   onSuccess: (id: string) => void,
 ): Promise<void> {
-  const { data, ok } = await fetcher<Webhook>("/v1/webhooks", {
+  const { data, ok } = await fetcher<Webhook>("/webhooks", {
     method: "POST",
     body: JSON.stringify(dto),
   });
@@ -25,12 +25,12 @@ export async function createOnSubmit(
 }
 
 export async function updateOnSubmit(
-  fetcher: FetcherFn,
+  fetcher: ClientFetcher,
   id: string,
   dto: UpdateWebhookDto,
   onSuccess?: VoidFunction,
 ): Promise<void> {
-  const { ok } = await fetcher(`/v1/webhooks/${id}`, {
+  const { ok } = await fetcher(`/webhooks/${id}`, {
     method: "PATCH",
     body: JSON.stringify(dto),
   });

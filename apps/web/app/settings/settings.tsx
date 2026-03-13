@@ -1,11 +1,11 @@
 "use client";
 
 import { useFetcher } from "@/api/fetchers/client";
-import { useForm } from "@/ui";
+import { useApiUrl, useForm } from "@/ui";
 import { PageContainer, PageShell, PageTitle, Panel } from "@/ui/components";
 import { PER_PAGE_MAX, PER_PAGE_MIN } from "@workspace/lib/dto/settings/constants";
 import type { UpdateSettingsDto, UpdateUserDto } from "@workspace/lib/dto";
-import { Monitor, Save, Settings as SettingsIcon, User } from "lucide-react";
+import { LayoutGrid, Save, Settings as SettingsIcon, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { isStrongPassword } from "class-validator";
 import { toast } from "sonner";
@@ -20,6 +20,7 @@ interface SettingsProps {
 export function Settings({ currentPerPage, currentUsername, userId }: SettingsProps) {
   const { refresh } = useRouter();
   const fetcher = useFetcher();
+  const apiUrl = useApiUrl();
 
   const userForm = useForm({
     defaultValues: {
@@ -31,7 +32,7 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
       try {
         const username = value.username !== currentUsername ? value.username.trim() || undefined : undefined;
         const password = value.password.trim() || undefined;
-        const res = await fetcher(`/v1/users/${userId}`, {
+        const res = await fetcher(`/users/${userId}`, {
           method: "PATCH",
           credentials: "include",
           body: JSON.stringify({ username, password } satisfies UpdateUserDto),
@@ -48,12 +49,10 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
     },
   });
   const settingsForm = useForm({
-    defaultValues: {
-      perPage: currentPerPage,
-    } satisfies UpdateSettingsDto,
+    defaultValues: { perPage: currentPerPage, apiUrl } satisfies UpdateSettingsDto & { apiUrl: string },
     onSubmit: async ({ value }) => {
       try {
-        const res = await fetcher("/v1/settings", {
+        const res = await fetcher("/settings", {
           method: "PATCH",
           credentials: "include",
           body: JSON.stringify({ perPage: value.perPage } satisfies UpdateSettingsDto),
@@ -140,12 +139,15 @@ export function Settings({ currentPerPage, currentUsername, userId }: SettingsPr
                 <Panel
                   title={
                     <span className="flex items-center gap-2">
-                      <Monitor className="h-4 w-4 text-fuchsia-400" />
-                      Display
+                      <LayoutGrid className="h-4 w-4 text-fuchsia-400" />
+                      App
                     </span>
                   }
                 >
-                  <div className="w-full md:w-1/2">
+                  <div className="space-y-4">
+                    <settingsForm.AppField name="apiUrl">
+                      {(field) => <field.Input label="API url" readOnly disabled />}
+                    </settingsForm.AppField>
                     <settingsForm.AppField
                       name="perPage"
                       validators={{

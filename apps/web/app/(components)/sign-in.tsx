@@ -14,7 +14,7 @@ export function SignIn() {
   const form = useForm({
     defaultValues: { username: "", password: "" } satisfies SignInDto,
     onSubmit: async ({ value, formApi }) => {
-      const { ok, status } = await fetcher("/v1/auth/sign-in", {
+      const { ok, status } = await fetcher("/auth/sign-in", {
         method: "POST",
         credentials: "include",
         body: JSON.stringify(value),

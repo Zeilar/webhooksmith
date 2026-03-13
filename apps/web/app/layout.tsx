@@ -2,10 +2,10 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import type { PropsWithChildren } from "react";
-import { Navbar } from "./navbar";
-import { Footer } from "./footer";
-import { Providers } from "./providers";
-import { SignIn } from "./sign-in";
+import { Navbar } from "./(components)/navbar";
+import { Footer } from "./(components)/footer";
+import { Providers } from "./(components)/providers";
+import { SignIn } from "./(components)/sign-in";
 import { getUser } from "@/api/server/user";
 import classNames from "classnames";
 import { getDbHealth } from "@/api/server/db";
@@ -22,9 +22,8 @@ const siteDescription = "Take control of your services' webhooks.";
 const ogImagePath = "/webhooksmith.png";
 
 function getMetadataBase(): URL | null {
-  const raw = process.env.WEB_URL ?? "http://localhost:3000";
   try {
-    return new URL(raw);
+    return new URL(process.env.WEB_URL);
   } catch {
     return null;
   }
@@ -72,8 +71,8 @@ export default async function RootLayout({ children }: PropsWithChildren) {
   return (
     <html className={classNames("dark", inter.variable, "antialiased")} lang="en">
       <body>
-        <Providers user={user} socketUrl={process.env.SOCKET_URL} apiUrl={process.env.API_URL}>
-          {user && <Navbar logoutUrl={`${process.env.API_URL}/v1/auth/logout`} />}
+        <Providers apiUrl={process.env.API_URL} user={user} socketUrl={process.env.SOCKET_URL}>
+          {user && <Navbar />}
           {user ? children : <SignIn />}
           <Footer />
         </Providers>

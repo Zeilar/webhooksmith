@@ -66,7 +66,7 @@ export interface FieldLabelProps extends PropsWithChildren, LabelHTMLAttributes<
 }
 
 const fieldClassName =
-  "w-full rounded-lg border border-slate-700/75 bg-slate-900/45 px-3 py-2 text-sm outline-none transition-colors placeholder:text-slate-400 focus:border-fuchsia-400/80 active:border-fuchsia-400/80 disabled:border-slate-800/70 disabled:text-slate-500 read-only:border-slate-800/70 read-only:text-slate-400";
+  "w-full rounded-lg border border-slate-700/75 bg-slate-900/45 px-3 py-2 text-sm outline-none transition-colors placeholder:text-slate-400 focus:border-fuchsia-400/80 active:border-fuchsia-400/80 disabled:border-slate-800/70 disabled:text-slate-400 read-only:border-slate-800/70 read-only:text-slate-400";
 
 const labelClassName = "mb-1.5 block text-sm font-medium text-slate-200";
 const monacoThemeName = "webhooksmith-slate";

@@ -8,12 +8,12 @@ import { ProgressProvider } from "@bprogress/next/app";
 import type { UserWithoutPassword } from "@workspace/lib/db/schema";
 
 interface ProvidersProps extends PropsWithChildren {
+  apiUrl: string;
   user: UserWithoutPassword | null;
   socketUrl: string;
-  apiUrl: string;
 }
 
-export function Providers({ user, children, socketUrl, apiUrl }: ProvidersProps) {
+export function Providers({ apiUrl, user, children, socketUrl }: ProvidersProps) {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { refetchOnWindowFocus: false, retry: false }, mutations: { retry: false } },
   });

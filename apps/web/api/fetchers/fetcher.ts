@@ -5,15 +5,12 @@ export interface FetcherResult<T = unknown> {
   statusText?: string;
 }
 
-export type FetcherFn = <T = unknown>(uri: `/${string}`, options?: RequestInit) => Promise<FetcherResult<T>>;
-
 export async function fetcher<T = unknown>(
-  apiUrl: string,
-  uri: `/${string}`,
+  url: string,
   { headers, ...options }: RequestInit = {},
 ): Promise<FetcherResult<T>> {
   try {
-    const res = await fetch(`${apiUrl}${uri}`, {
+    const res = await fetch(url, {
       headers: { "Content-Type": "application/json", ...headers },
       credentials: "include",
       ...options,

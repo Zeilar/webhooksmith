@@ -2,7 +2,6 @@ import { serverFetcher } from "@/api/fetchers/server";
 import type { Settings as ISettings } from "@workspace/lib/db/schema";
 import { requireUser } from "@/api/server/auth";
 import { Settings } from "./settings";
-import { cookies } from "next/headers";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -14,7 +13,7 @@ export const metadata: Metadata = {
 export default async function Page() {
   const user = await requireUser();
 
-  const settingsQuery = await serverFetcher<ISettings>("/v1/settings", { headers: { cookie: `${await cookies()}` } });
+  const settingsQuery = await serverFetcher<ISettings>("/v1/settings");
 
   if (!settingsQuery.ok || !settingsQuery.data) {
     throw new Error("Settings not found.");

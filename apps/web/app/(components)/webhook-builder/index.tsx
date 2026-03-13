@@ -123,7 +123,7 @@ export function WebhookBuilder({
       if (!receiver) {
         throw new Error("No receiver configured.");
       }
-      const { data, ok, status, statusText } = await fetcher("/v1/webhooks/test-blueprint", {
+      const { data, ok, status, statusText } = await fetcher("/webhooks/test-blueprint", {
         method: "POST",
         body: JSON.stringify({
           blueprint: form.getFieldValue("blueprint"),
@@ -139,7 +139,7 @@ export function WebhookBuilder({
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
-      const { data, ok, status, statusText } = await fetcher(`/v1/webhooks/${id}`, { method: "DELETE" });
+      const { data, ok, status, statusText } = await fetcher(`/webhooks/${id}`, { method: "DELETE" });
       if (!ok) {
         throw new Error(`Error: ${status} ${statusText}`, { cause: data });
       }

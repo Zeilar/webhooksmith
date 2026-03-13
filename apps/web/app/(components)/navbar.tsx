@@ -7,12 +7,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import type { ReactNode } from "react";
-import webooksmithIcon from "../public/webhooksmith.png";
+import webooksmithIcon from "../../public/webhooksmith.png";
 import classNames from "classnames";
-
-interface NavbarProps {
-  logoutUrl: string;
-}
 
 interface NavbarItem {
   url: Route;
@@ -33,7 +29,7 @@ const items: NavbarItem[] = [
   },
 ];
 
-export function Navbar({ logoutUrl }: NavbarProps) {
+export function Navbar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { data, isLoading } = useQuery<string>({
@@ -41,7 +37,7 @@ export function Navbar({ logoutUrl }: NavbarProps) {
     queryFn: () => window.location.href,
     initialData: "",
   });
-  const logoutHref = !isLoading && data ? `${logoutUrl}?returnUrl=${encodeURIComponent(data)}` : undefined;
+  const logoutHref = !isLoading && data ? `/v1/auth/logout?returnUrl=${encodeURIComponent(data)}` : undefined;
 
   return (
     <header className="sticky top-0 z-40 border-b border-slate-700/75 bg-slate-950/70 backdrop-blur-xl px-4">

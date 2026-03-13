@@ -1,9 +1,9 @@
 "use client";
 
-import { fetcher, type FetcherFn } from "./fetcher";
-import { useApiUrl } from "@/ui/contexts";
+import { fetcher, type FetcherResult } from "./fetcher";
 
-export function useFetcher(): FetcherFn {
-  const apiUrl = useApiUrl();
-  return (uri, options) => fetcher(apiUrl, uri, options);
+export type ClientFetcher = <T = unknown>(uri: `/${string}`, options?: RequestInit) => Promise<FetcherResult<T>>;
+
+export function useFetcher(): ClientFetcher {
+  return (uri: `/${string}`, options?: RequestInit) => fetcher(`/api${uri}`, options);
 }

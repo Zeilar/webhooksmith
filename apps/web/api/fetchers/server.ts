@@ -5,7 +5,7 @@ export async function serverFetcher<T = unknown>(
   uri: `/${string}`,
   { headers, ...options }: RequestInit = {},
 ): Promise<FetcherResult<T>> {
-  return fetcher(process.env.API_URL, uri, {
+  return fetcher(`${process.env.API_URL}${uri}`, {
     headers: {
       ...headers,
       cookie: `${await cookies()}`,
