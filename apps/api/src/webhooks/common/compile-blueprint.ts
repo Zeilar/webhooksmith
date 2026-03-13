@@ -3,6 +3,7 @@ type Json = null | boolean | number | string | Json[] | { [key: string]: Json };
 type PathToken = string | number;
 
 const DELETE = Symbol("DELETE");
+const DOLLAR_PATH_PATTERN = /\$[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*|\[\d+\])*/g;
 
 function parseDollarPath(expr: string): PathToken[] | null {
   if (typeof expr !== "string" || !expr.startsWith("$")) return null;
@@ -70,10 +71,37 @@ function transform(node: any, input: any): any | typeof DELETE {
   // Replace "$..." strings; if unresolved => DELETE
   if (typeof node === "string") {
     const tokens = parseDollarPath(node);
-    if (!tokens) return node;
+    if (tokens) {
+      const resolved = getByTokens(input, tokens);
+      return resolved !== undefined ? resolved : DELETE;
+    }
 
-    const resolved = getByTokens(input, tokens);
-    return resolved !== undefined ? resolved : DELETE;
+    const matches = [...node.matchAll(DOLLAR_PATH_PATTERN)];
+    if (matches.length === 0) {
+      return node;
+    }
+
+    let output = "";
+    let lastIndex = 0;
+
+    for (const match of matches) {
+      const expr = match[0];
+      const index = match.index ?? 0;
+      const embeddedTokens = parseDollarPath(expr);
+      if (!embeddedTokens) {
+        continue;
+      }
+      const resolved = getByTokens(input, embeddedTokens);
+      if (resolved === undefined) {
+        return DELETE;
+      }
+      output += node.slice(lastIndex, index);
+      output += typeof resolved === "string" ? resolved : JSON.stringify(resolved);
+      lastIndex = index + expr.length;
+    }
+
+    output += node.slice(lastIndex);
+    return output;
   }
 
   // Arrays: transform items; remove deleted items
