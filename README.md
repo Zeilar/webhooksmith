@@ -136,15 +136,17 @@ Transformed output:
 * Keep in mind this is an ongoing project and I can't guarantee that version bumps will be smooth. Always back up your database before updating this app. If the migrate script fails for whatever reason, you may try changing `db:migrate` to `db:push` in the API image command.
 
 ### Authentication & security
-* The app uses session cookies for authentication, which is stored in the database. It's used as a single user system, that authenticates with username and password. I don't plan on adding support for external providers or email functionality.
+* The app uses session cookies for authentication, and they're stored in the database. It's used as a single user system, that authenticates with username and password. I don't plan on adding support for external providers or email functionality.
 
-* Many requests happen directly between client and API, meaning the API must be reachable from the browser. I may refactor this in the future so all requests go to the web server first, meaning the API would only need to be reachable between from the web server.
+* All requests are E2E between the servers. So you may hide your API behind a proxy, so long as the frontend server can reach the API_URL endpoint. But I cannot guarantee that SSL will work if you use secure protocols for the API URL, I've only tested it with my personal Nginx setup.
 
 * If you forget your credentials, don't worry. Simply use the `INITIAL_USERNAME` and `INITIAL_PASSWORD` environment variables, and it'll delete all users and insert a new one with those credentials. Nothing except sessions is bound to a user, so the only effect will be that you need to log in again (which you would anyway as it's a new user). The rest of the app will be unaffected by this.
 
-* The app doesn't handle certificates or anything of the like. It's up to you to use a proxy or similar solutions to handle that.
+* The app doesn't handle certificates or anything of the like. It's up to you to use a proxy or whatever else.
 
-* If you choose to enable Swagger, you must be aware that it's not protected. The routes are, but not Swagger itself.
+* If you choose to enable Swagger, you must be aware that it's not protected. The API routes are, and you still need a valid session cookie in Swagger to make requests, but the Swagger dashboard itself is not protected.
+
+* The app currently has no backup functionality, it's up to you to back your database up. But I may consider adding database backups in a future release.
 
 ## Final words
 This is a niche app, and I half the reason I built this was to try some new things and stay up to date. I'd be happy for feedback, and feel free to open issues. I can't promise I'll resolve them quickly, but I'll do my best to maintain this little app.
