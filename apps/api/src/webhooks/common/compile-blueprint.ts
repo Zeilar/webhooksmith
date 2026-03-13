@@ -3,7 +3,7 @@ type Json = null | boolean | number | string | Json[] | { [key: string]: Json };
 type PathToken = string | number;
 
 const DELETE = Symbol("DELETE");
-const DOLLAR_PATH_PATTERN = /\$[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*|\[\d+\])*/g;
+const DOLLAR_PATH_PATTERN = /\$[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*|\[\d+\])*(?![A-Za-z0-9_.\[])/g;
 
 function parseDollarPath(expr: string): PathToken[] | null {
   if (typeof expr !== "string" || !expr.startsWith("$")) return null;

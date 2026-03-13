@@ -64,6 +64,27 @@ describe("compileBlueprint", () => {
     });
   });
 
+  it("interpolates multiple embedded paths inside a single string", () => {
+    const input = {
+      movie: {
+        title: "Alien",
+        year: 1979,
+      },
+    };
+
+    const result = compileBlueprint(input, {
+      message: "$movie.title $movie.year",
+      wrapped: "Now playing: $movie.title ($movie.year)",
+      list: ["Title: $movie.title", "$movie.title ($movie.year)"],
+    });
+
+    expect(result).toEqual({
+      message: "Alien 1979",
+      wrapped: "Now playing: Alien (1979)",
+      list: ["Title: Alien", "Alien (1979)"],
+    });
+  });
+
   it("throws when blueprint string is invalid JSON", () => {
     expect(() => compileBlueprint({}, "{")).toThrow(SyntaxError);
   });
