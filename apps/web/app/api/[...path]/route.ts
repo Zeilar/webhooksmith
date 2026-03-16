@@ -15,8 +15,6 @@ async function proxy(request: Request, path: string[]): Promise<Response> {
   const target = new URL(`/v1/${path.join("/")}${new URL(request.url).search}`, process.env.API_URL);
   const upstreamHeaders = new Headers();
 
-  console.log({ target });
-
   for (const [key, value] of request.headers.entries()) {
     if (!HOP_BY_HOP_HEADERS.has(key.toLowerCase())) {
       upstreamHeaders.set(key, value);
