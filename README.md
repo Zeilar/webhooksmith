@@ -43,7 +43,7 @@ services:
       HOST: 0.0.0.0
       ALLOWED_ORIGINS: web,webhooksmith.angelin.foo
       COOKIE_DOMAIN: .angelin.foo # I recommend using a dot prefix if you use subdomains.
-      SESSION_TTL: 604800000
+      SESSION_TTL: 604800000 # 7 days
       SWAGGER_ENABLED: true
       SWAGGER_PATH: /docs
       INITIAL_USERNAME: admin
@@ -64,8 +64,8 @@ services:
     restart: unless-stopped
     environment:
       WEB_URL: https://webhooksmith.angelin.foo # Optional for SEO
-      API_URL: https://api-webhooksmith.angelin.foo
-      SOCKET_URL: wss://api-webhooksmith.angelin.foo
+      API_URL: http://webhooksmith-api:3030 # The web server will use this URL for API requests.
+      SOCKET_URL: ws://webhooksmith-api:3030 # Same as above. Socket is mandatory for the intercept feature to work.
     ports:
       - 3000:3000
     depends_on:
